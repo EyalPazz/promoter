@@ -1,7 +1,7 @@
 package main
 
 import (
-    "promoter/cmd"
+	"promoter/cmd"
 )
 
 func main() {

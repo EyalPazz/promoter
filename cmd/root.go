@@ -22,11 +22,12 @@ var (
 	}
 
     // Authentication Flags
-    githubActions string
+    // githubActions string
 )
 
 // Execute executes the root command.
 func Execute() error {
+    Extend(rootCmd)
 	return rootCmd.Execute()
 }
 
@@ -58,9 +59,7 @@ func initConfig() {
 
 	viper.AutomaticEnv()
 
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	} else {
+	if err := viper.ReadInConfig(); err != nil {
         fmt.Println("Error Reading Config File")
-    }
+	} 
 }
