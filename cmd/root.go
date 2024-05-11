@@ -10,24 +10,24 @@ import (
 
 var (
 	// Used for flags.
-	cfgFile     string
+	cfgFile string
 
 	rootCmd = &cobra.Command{
 		Use:   "promoter",
 		Short: "promoter is a CLI tool to easily deploy services",
-		Long: `promoter is a CLI tool to easily deploy services across different environments`,
-        Run: func (cmd *cobra.Command, args []string) {
-                fmt.Println("lsjdfdj")
-    },
+		Long:  `promoter is a CLI tool to easily deploy services across different environments`,
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("lsjdfdj")
+		},
 	}
 
-    // Authentication Flags
-    // githubActions string
+	// Authentication Flags
+	// githubActions string
 )
 
 // Execute executes the root command.
 func Execute() error {
-    Extend(rootCmd)
+	Extend(rootCmd)
 	return rootCmd.Execute()
 }
 
@@ -60,6 +60,6 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-        fmt.Println("Error Reading Config File")
-	} 
+		fmt.Println("Error Reading Config File")
+	}
 }
