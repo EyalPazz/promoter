@@ -25,7 +25,8 @@ func ChangeServiceTag(fileName string, service string, env string, tag string ) 
     }
 
 
-    yamlFile, err := os.ReadFile(filepath.Join(repoPath, fileName + ".yaml"))
+    projectFile := filepath.Join(repoPath, fileName + ".yaml")
+    yamlFile, err := os.ReadFile(projectFile)
 	if err != nil {
 		fmt.Println("Error reading YAML file:", err)
 		return err
@@ -37,7 +38,7 @@ func ChangeServiceTag(fileName string, service string, env string, tag string ) 
 		fmt.Println("Error unmarshalling YAML:", err)
 		return err
 	}
-
+    
     if serviceConfig, ok := config.Services[service]; ok {
 		serviceConfig[env] = tag
 		config.Services[service] = serviceConfig
@@ -51,7 +52,7 @@ func ChangeServiceTag(fileName string, service string, env string, tag string ) 
 		return err
 	}
 
-	err = os.WriteFile("config.yaml", updatedYAML, 0644)
+	err = os.WriteFile(projectFile, updatedYAML, 0644)
 	if err != nil {
 		return err
 	}
