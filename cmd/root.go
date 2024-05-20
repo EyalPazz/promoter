@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"promoter/helpers/manipulations"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -11,13 +12,20 @@ import (
 var (
 	// Used for flags.
 	cfgFile string
+	project string
+	service string
+	env     string
+	tag     string
 
 	rootCmd = &cobra.Command{
 		Use:   "promoter",
 		Short: "promoter is a CLI tool to easily deploy services",
 		Long:  `promoter is a CLI tool to easily deploy services across different environments`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("lsjdfdj")
+            err := manipulations.ChangeServiceTag(project, service, env, tag)
+            if err != nil {
+                fmt.Print(err)
+            }
 		},
 	}
 
@@ -35,12 +43,15 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.promoter.yaml)")
-	// rootCmd.PersistentFlags().StringP("author", "a", "Eyal Paz", "author name for copyright attribution")
-	// rootCmd.PersistentFlags().Bool("viper", true, "use Viper for configuration")
-	// viper.BindPFlag("author", rootCmd.PersistentFlags().Lookup("author"))
-	// viper.BindPFlag("useViper", rootCmd.PersistentFlags().Lookup("viper"))
-	// viper.SetDefault("author", "Eyal Paz eyalp700@gmail.com")
-	// viper.SetDefault("license", "apache")
+    rootCmd.Flags().StringVar(&project, "project", "", "Project name (required)")
+	rootCmd.Flags().StringVar(&service, "service", "", "Service name (required)")
+	rootCmd.Flags().StringVar(&env, "env", "", "Environment name (required)")
+	rootCmd.Flags().StringVar(&tag, "tag", "", "Tag name (required)")
+
+	rootCmd.MarkFlagRequired("project")
+	rootCmd.MarkFlagRequired("service")
+	rootCmd.MarkFlagRequired("env")
+	rootCmd.MarkFlagRequired("tag")
 }
 
 func initConfig() {

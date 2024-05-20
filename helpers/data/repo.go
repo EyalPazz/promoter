@@ -14,7 +14,7 @@ const (
 	DefaultPromoterDir = "/promoter-data/repositories/"
 )
 
-func getRepoPath() (string, error) {
+func GetRepoPath() (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		fmt.Println("Error getting home directory:", err)
@@ -30,7 +30,7 @@ func RefreshRepo() {
 		os.Exit(1)
 	}
 
-    repoPath, err := getRepoPath()
+    repoPath, err := GetRepoPath()
 	if err != nil {
 		fmt.Printf("Error getting repository path: %s\n", err)
 		os.Exit(1)
@@ -74,12 +74,11 @@ func RefreshRepo() {
 }
 
 func ManifestRepoExists() (bool, error) {
-	homeDir, err := os.UserHomeDir()
+    manifestPath, err := GetRepoPath()
 	if err != nil {
-		fmt.Println("Error getting home directory:", err)
+		fmt.Printf("Error getting repository path: %s\n", err)
 		return false, err
 	}
-	manifestPath := homeDir + DefaultPromoterDir + "manifest"
 
 	info, err := os.Stat(manifestPath)
 	if os.IsNotExist(err) {
