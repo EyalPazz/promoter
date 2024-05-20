@@ -10,8 +10,8 @@ import (
 )
 
 var (
-    repositoryName string 
-    region string
+	repositoryName string
+	region         string
 )
 
 func Extend(rootCmd *cobra.Command) {
@@ -19,8 +19,9 @@ func Extend(rootCmd *cobra.Command) {
 
 	GetLatestImageCmd.Flags().StringVarP(&repositoryName, "repository", "r", "", "ECR repository name")
 	GetLatestImageCmd.Flags().StringVarP(&region, "region", "R", "", "AWS region")
-    rootCmd.AddCommand(GetLatestImageCmd)
+	rootCmd.AddCommand(GetLatestImageCmd)
 
+    rootCmd.AddCommand(RefreshManifestRepoCmd)
 }
 
 var ManifestRepoCloneCmd = &cobra.Command{
@@ -45,25 +46,33 @@ var GetLatestImageCmd = &cobra.Command{
 	Long:  "Get Latest Image from desired repo",
 	Run: func(cmd *cobra.Command, args []string) {
 
-    if repositoryName == "" {
-            repositoryName = viper.GetString("repository")
-        }
-        if region == "" {
-            region = viper.GetString("region")
-        }
+		if repositoryName == "" {
+			repositoryName = viper.GetString("repository")
+		}
+		if region == "" {
+			region = viper.GetString("region")
+		}
 
-        if repositoryName == "" || region == "" {
-            fmt.Println("Error: repository and region must be specified either as flags or in the config file")
-            return
-        }
-        ctx := context.Background()
+		if repositoryName == "" || region == "" {
+			fmt.Println("Error: repository and region must be specified either as flags or in the config file")
+			return
+		}
+		ctx := context.Background()
 		imageDetail, err := data.GetLatestImage(ctx, repositoryName, region)
 		if err != nil {
-            fmt.Println("Error Getting Latest Image From Repo:", err)
-            return
+			fmt.Println("Error Getting Latest Image From Repo:", err)
+			return
 		}
 
 		fmt.Println(imageDetail.ImageTags)
 	},
 }
 
+var RefreshManifestRepoCmd = &cobra.Command{
+	Use:   "refresh-manifest",
+	Short: "Refresh The Manifest Repo",
+	Long:  "Refresh The Manifest Repo",
+	Run: func(cmd *cobra.Command, args []string) {
+        data.RefreshRepo()
+	},
+}
