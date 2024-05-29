@@ -9,17 +9,17 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/object"
 )
 
-func CommitRepoChange(fileName string, service string, env string, tag string ) error {
-    repoPath, err := data.GetRepoPath()
+func CommitRepoChange(fileName string, service string, env string, tag string) error {
+	repoPath, err := data.GetRepoPath()
 	if err != nil {
-	    return err 
-    }
-    repo, err := git.PlainOpen(repoPath)
+		return err
+	}
+	repo, err := git.PlainOpen(repoPath)
 	if err != nil {
 		return err
 	}
 
-    worktree, err := repo.Worktree()
+	worktree, err := repo.Worktree()
 	if err != nil {
 		return err
 	}
@@ -29,19 +29,19 @@ func CommitRepoChange(fileName string, service string, env string, tag string ) 
 		return err
 	}
 
-    cfg, err := repo.Config()
+	cfg, err := repo.Config()
 	if err != nil {
 		return err
 	}
 
-    _ , commitErr := worktree.Commit(fmt.Sprint("promoting %s/%s in %s to %s", fileName, service, env, tag), &git.CommitOptions{
+	_, commitErr := worktree.Commit(fmt.Sprint("promoting %s/%s in %s to %s", fileName, service, env, tag), &git.CommitOptions{
 		Author: &object.Signature{
-			Name: cfg.User.Name,
+			Name:  cfg.User.Name,
 			Email: cfg.User.Email,
 		},
 	})
 
-    if commitErr != nil {
+	if commitErr != nil {
 		return err
 	}
 
@@ -51,10 +51,9 @@ func CommitRepoChange(fileName string, service string, env string, tag string ) 
 		return err
 	}
 
-    err = repo.Push(&git.PushOptions{
+	err = repo.Push(&git.PushOptions{
 		RemoteName: "origin",
-		Auth: auth,
-	});
-    return nil;
+		Auth:       auth,
+	})
+	return nil
 }
-

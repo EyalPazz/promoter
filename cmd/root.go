@@ -22,10 +22,10 @@ var (
 		Short: "promoter is a CLI tool to easily deploy services",
 		Long:  `promoter is a CLI tool to easily deploy services across different environments`,
 		Run: func(cmd *cobra.Command, args []string) {
-            err := manipulations.ChangeServiceTag(project, service, env, tag)
-            if err != nil {
-                fmt.Print(err)
-            }
+			err := manipulations.ChangeServiceTag(project, service, env, tag)
+			if err != nil {
+				fmt.Print(err)
+			}
 		},
 	}
 
@@ -43,7 +43,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.promoter.yaml)")
-    rootCmd.Flags().StringVar(&project, "project", "", "Project name (required)")
+	rootCmd.Flags().StringVar(&project, "project", "", "Project name (required)")
 	rootCmd.Flags().StringVar(&service, "service", "", "Service name (required)")
 	rootCmd.Flags().StringVar(&env, "env", "", "Environment name (required)")
 	rootCmd.Flags().StringVar(&tag, "tag", "", "Tag name (required)")

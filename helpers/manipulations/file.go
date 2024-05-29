@@ -16,17 +16,16 @@ type Config struct {
 	Services map[string]ServiceConfig `yaml:"services"`
 }
 
-func ChangeServiceTag(fileName string, service string, env string, tag string ) error {
+func ChangeServiceTag(fileName string, service string, env string, tag string) error {
 
-    repoPath, err := data.GetRepoPath()
+	repoPath, err := data.GetRepoPath()
 	if err != nil {
 		fmt.Printf("Error getting repository path: %s\n", err)
-	    return err 
-    }
+		return err
+	}
 
-
-    projectFile := filepath.Join(repoPath, fileName + ".yaml")
-    yamlFile, err := os.ReadFile(projectFile)
+	projectFile := filepath.Join(repoPath, fileName+".yaml")
+	yamlFile, err := os.ReadFile(projectFile)
 	if err != nil {
 		fmt.Println("Error reading YAML file:", err)
 		return err
@@ -38,16 +37,16 @@ func ChangeServiceTag(fileName string, service string, env string, tag string ) 
 		fmt.Println("Error unmarshalling YAML:", err)
 		return err
 	}
-    
-    if serviceConfig, ok := config.Services[service]; ok {
+
+	if serviceConfig, ok := config.Services[service]; ok {
 		serviceConfig[env] = tag
 		config.Services[service] = serviceConfig
 	} else {
-	fmt.Printf("Config: %+v\n", config)
+		fmt.Printf("Config: %+v\n", config)
 		return errors.New("Service not found")
 	}
 
-    updatedYAML, err := yaml.Marshal(&config)
+	updatedYAML, err := yaml.Marshal(&config)
 	if err != nil {
 		return err
 	}
@@ -56,5 +55,5 @@ func ChangeServiceTag(fileName string, service string, env string, tag string ) 
 	if err != nil {
 		return err
 	}
-    return nil
+	return nil
 }

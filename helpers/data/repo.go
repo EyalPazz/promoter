@@ -30,13 +30,13 @@ func RefreshRepo() {
 		os.Exit(1)
 	}
 
-    repoPath, err := GetRepoPath()
+	repoPath, err := GetRepoPath()
 	if err != nil {
 		fmt.Printf("Error getting repository path: %s\n", err)
 		os.Exit(1)
 	}
 
-    repo, err := git.PlainOpen(repoPath)
+	repo, err := git.PlainOpen(repoPath)
 	if err != nil {
 		fmt.Printf("Error opening repository: %s\n", err)
 		os.Exit(1)
@@ -44,8 +44,8 @@ func RefreshRepo() {
 
 	err = repo.Fetch(&git.FetchOptions{
 		RemoteName: "origin",
-		Auth: auth,
-		Progress: os.Stdout,
+		Auth:       auth,
+		Progress:   os.Stdout,
 	})
 
 	if err != nil && err != git.NoErrAlreadyUpToDate {
@@ -61,8 +61,8 @@ func RefreshRepo() {
 
 	err = w.Pull(&git.PullOptions{
 		RemoteName: "origin",
-		Auth: auth,
-		Progress: os.Stdout,
+		Auth:       auth,
+		Progress:   os.Stdout,
 	})
 
 	if err != nil && err != git.NoErrAlreadyUpToDate {
@@ -74,7 +74,7 @@ func RefreshRepo() {
 }
 
 func ManifestRepoExists() (bool, error) {
-    manifestPath, err := GetRepoPath()
+	manifestPath, err := GetRepoPath()
 	if err != nil {
 		fmt.Printf("Error getting repository path: %s\n", err)
 		return false, err

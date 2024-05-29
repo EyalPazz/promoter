@@ -21,7 +21,7 @@ func Extend(rootCmd *cobra.Command) {
 	GetLatestImageCmd.Flags().StringVarP(&region, "region", "R", "", "AWS region")
 	rootCmd.AddCommand(GetLatestImageCmd)
 
-    rootCmd.AddCommand(RefreshManifestRepoCmd)
+	rootCmd.AddCommand(RefreshManifestRepoCmd)
 }
 
 var ManifestRepoCloneCmd = &cobra.Command{
@@ -73,6 +73,6 @@ var RefreshManifestRepoCmd = &cobra.Command{
 	Short: "Refresh The Manifest Repo",
 	Long:  "Refresh The Manifest Repo",
 	Run: func(cmd *cobra.Command, args []string) {
-        data.RefreshRepo()
+		data.RefreshRepo()
 	},
 }
