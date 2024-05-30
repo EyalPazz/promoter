@@ -2,6 +2,12 @@
 
 Promoter facilitates easy promotion between environments using GitOps and Helm. It automates the update of image tags for services in different environments.
 
+## Installation
+
+```bash
+curl -sL https://github.com/EyalPazz/promoter/raw/main/install.sh | bash
+```
+
 ## Usage
 
 To promote a service to the production environment with the latest image tag, use:
@@ -39,3 +45,10 @@ chart-repo/
       └── service/
           └── values-${env}.yaml
 ```
+
+## To-Do List
+
+- [ ] 1: Make Deployment Platform agnostic
+- [ ] 2: Add Tests
+- [ ] 3: Expend to more providers and manifest repo structures
+- [ ] 4: Write documentation
