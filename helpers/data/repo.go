@@ -17,14 +17,13 @@ const (
 func GetRepoPath() (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Println("Error getting home directory:", err)
 		return "", err
 	}
 	return homeDir + DefaultPromoterDir + "manifest", nil
 }
 
-func RefreshRepo() {
-	auth, err := gitAuth.GetSSHAuth()
+func RefreshRepo(hasPassphrase bool) {
+	auth, err := gitAuth.GetSSHAuth(hasPassphrase)
 	if err != nil {
 		fmt.Println("Error Authenticating With Git Remote:", err)
 		os.Exit(1)
@@ -95,28 +94,25 @@ func ManifestRepoExists() (bool, error) {
 	return true, nil
 }
 
-func CloneRepository() error {
-	auth, err := gitAuth.GetSSHAuth()
+func CloneRepository(hasPassphrase bool) error {
+	auth, err := gitAuth.GetSSHAuth(hasPassphrase)
 	if err != nil {
-		fmt.Println("Error Authenticating With Git Remote:", err)
 		return err
 	}
 
 	manifestRepoUrl := viper.GetString("manifest-repo")
 	if manifestRepoUrl == "" {
-		fmt.Println("No manifest repo URL given")
-		return err
+		return errors.New("No manifest repo URL given")
 	}
 
-	homeDir, err := os.UserHomeDir()
+	repoPath, err := GetRepoPath()
 	if err != nil {
-		fmt.Println("Error getting home directory:", err)
 		return err
 	}
 
 	fmt.Println("Cloning repository...")
 
-	_, cloneErr := git.PlainClone(homeDir+DefaultPromoterDir+"manifest", false, &git.CloneOptions{
+	_, cloneErr := git.PlainClone(repoPath, false, &git.CloneOptions{
 		URL:  manifestRepoUrl,
 		Auth: auth,
 	})

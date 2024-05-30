@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func CommitRepoChange(project string, service string, env string, tag string) error {
+func CommitRepoChange(project string, service string, env string, tag string, hasPassphrase bool) error {
 	repoPath, err := data.GetRepoPath()
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func CommitRepoChange(project string, service string, env string, tag string) er
 		return err
 	}
 
-	auth, err := gitAuth.GetSSHAuth()
+	auth, err := gitAuth.GetSSHAuth(hasPassphrase)
 	if err != nil {
 		fmt.Println("Error Authenticating With Git Remote:", err)
 		return err

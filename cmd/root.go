@@ -50,12 +50,19 @@ var (
 				fmt.Println(err)
 				return
 			}
+
 			err := manipulations.ChangeServiceTag(project, service, env, tag)
 			if err != nil {
 				fmt.Print(err)
 				return
 			}
-			err = manipulations.CommitRepoChange(project, service, env, tag)
+
+			passphraseFlag, err := cmd.PersistentFlags().GetBool("passphrase")
+			if err != nil {
+				fmt.Print(err)
+			}
+
+			err = manipulations.CommitRepoChange(project, service, env, tag, passphraseFlag)
 			if err != nil {
 				fmt.Print(err)
 			}
@@ -77,7 +84,8 @@ func init() {
 	rootCmd.Flags().StringVar(&project, "project", "", "Project name (required)")
 	rootCmd.Flags().StringVar(&service, "service", "", "Service name (required)")
 	rootCmd.Flags().StringVar(&env, "env", "", "Environment name (required)")
-	rootCmd.Flags().StringVar(&tag, "tag", "", "Tag name (required)")
+	rootCmd.Flags().StringVar(&tag, "tag", "", "Tag name")
+	rootCmd.PersistentFlags().Bool("passphrase", false, "Whether or not to prompt for ssh key passphrase")
 
 	rootCmd.MarkFlagRequired("project")
 	rootCmd.MarkFlagRequired("service")

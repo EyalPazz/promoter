@@ -30,7 +30,12 @@ var ManifestRepoCloneCmd = &cobra.Command{
 	Long:  "Authenticate with Git provider using SSH key to perform Git operations.",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		cloneErr := data.CloneRepository()
+		passphraseFlag, err := cmd.Root().PersistentFlags().GetBool("passphrase")
+		if err != nil {
+			fmt.Print(err)
+		}
+		cloneErr := data.CloneRepository(passphraseFlag)
+
 		if cloneErr != nil {
 			fmt.Println("Error cloning manifest repo:", cloneErr)
 			return
@@ -73,6 +78,10 @@ var RefreshManifestRepoCmd = &cobra.Command{
 	Short: "Refresh The Manifest Repo",
 	Long:  "Refresh The Manifest Repo",
 	Run: func(cmd *cobra.Command, args []string) {
-		data.RefreshRepo()
+		passphraseFlag, err := cmd.Root().PersistentFlags().GetBool("passphrase")
+		if err != nil {
+			fmt.Print(err)
+		}
+		data.RefreshRepo(passphraseFlag)
 	},
 }
