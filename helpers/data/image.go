@@ -2,7 +2,6 @@ package data
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"sort"
 
@@ -49,10 +48,10 @@ func GetLatestImage(ctx context.Context, repositoryName string, region string) (
 	return &latestImage, nil
 }
 
-func ImageExists(ctx context.Context, repositoryName, imageTag, region string) (bool, error) {
+func ImageExists(ctx context.Context, repositoryName, imageTag, region string) error {
 	svc, err := initializeECRClient(ctx, region)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	input := &ecr.DescribeImagesInput{
@@ -66,12 +65,8 @@ func ImageExists(ctx context.Context, repositoryName, imageTag, region string) (
 
 	_, err = svc.DescribeImages(ctx, input)
 	if err != nil {
-		var notFoundErr *types.ImageNotFoundException
-		if errors.As(err, &notFoundErr) {
-			return false, nil
-		}
-		return false, fmt.Errorf("error describing images: %w", err)
+		return fmt.Errorf("error describing images: %w", err)
 	}
 
-	return true, nil
+	return nil
 }

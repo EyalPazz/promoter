@@ -12,11 +12,13 @@ import (
 
 type ServiceConfig map[string]interface{}
 
-type Config struct {
-	Services map[string]ServiceConfig `yaml:"services"`
-}
+// type Config struct {
+//     Properties map[string]ServiceConfig
+// }
 
-func ChangeServiceTag(fileName string, service string, env string, tag string) error {
+const imageTagKey = "imageTag"
+
+func ChangeServiceTag(project string, service string, env string, tag string) error {
 
 	repoPath, err := data.GetRepoPath()
 	if err != nil {
@@ -24,26 +26,25 @@ func ChangeServiceTag(fileName string, service string, env string, tag string) e
 		return err
 	}
 
-	projectFile := filepath.Join(repoPath, fileName+".yaml")
+	// TODO: ADD .yaml / .yml support
+	projectFile := filepath.Join(repoPath, project+"/"+service+"/"+"values-"+env+".yaml")
 	yamlFile, err := os.ReadFile(projectFile)
 	if err != nil {
 		fmt.Println("Error reading YAML file:", err)
 		return err
 	}
 
-	var config Config
+	var config ServiceConfig
 	err = yaml.Unmarshal(yamlFile, &config)
 	if err != nil {
 		fmt.Println("Error unmarshalling YAML:", err)
 		return err
 	}
 
-	if serviceConfig, ok := config.Services[service]; ok {
-		serviceConfig[env] = tag
-		config.Services[service] = serviceConfig
+	if _, ok := config[imageTagKey]; ok {
+		config[imageTagKey] = tag
 	} else {
-		fmt.Printf("Config: %+v\n", config)
-		return errors.New("Service not found")
+		return errors.New("Image Tag Not found in values file")
 	}
 
 	updatedYAML, err := yaml.Marshal(&config)

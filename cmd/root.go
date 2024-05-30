@@ -1,8 +1,10 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"promoter/helpers/data"
 	"promoter/helpers/manipulations"
 
 	"github.com/spf13/cobra"
@@ -22,15 +24,44 @@ var (
 		Short: "promoter is a CLI tool to easily deploy services",
 		Long:  `promoter is a CLI tool to easily deploy services across different environments`,
 		Run: func(cmd *cobra.Command, args []string) {
+
+			if repositoryName == "" {
+				repositoryName = viper.GetString("repository")
+			}
+			if region == "" {
+				region = viper.GetString("region")
+			}
+
+			if repositoryName == "" || region == "" {
+				fmt.Println("Error: repository and region must be specified either as flags or in the config file")
+				return
+			}
+
+			ctx := context.Background()
+			if tag == "" {
+				// Notice That the convention for registry
+				latestImage, err := data.GetLatestImage(ctx, repositoryName, region)
+				if err != nil {
+					fmt.Print(err)
+					return
+				}
+				tag = latestImage.ImageTags[0]
+			} else if err := data.ImageExists(ctx, repositoryName, tag, region); err != nil {
+				fmt.Println(err)
+				return
+			}
 			err := manipulations.ChangeServiceTag(project, service, env, tag)
 			if err != nil {
 				fmt.Print(err)
+				return
 			}
+			err = manipulations.CommitRepoChange(project, service, env, tag)
+			if err != nil {
+				fmt.Print(err)
+			}
+
 		},
 	}
-
-	// Authentication Flags
-	// githubActions string
 )
 
 // Execute executes the root command.
@@ -51,7 +82,6 @@ func init() {
 	rootCmd.MarkFlagRequired("project")
 	rootCmd.MarkFlagRequired("service")
 	rootCmd.MarkFlagRequired("env")
-	rootCmd.MarkFlagRequired("tag")
 }
 
 func initConfig() {

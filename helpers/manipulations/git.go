@@ -4,12 +4,14 @@ import (
 	"fmt"
 	gitAuth "promoter/helpers/auth"
 	"promoter/helpers/data"
+	"time"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
+	"github.com/spf13/viper"
 )
 
-func CommitRepoChange(fileName string, service string, env string, tag string) error {
+func CommitRepoChange(project string, service string, env string, tag string) error {
 	repoPath, err := data.GetRepoPath()
 	if err != nil {
 		return err
@@ -29,15 +31,24 @@ func CommitRepoChange(fileName string, service string, env string, tag string) e
 		return err
 	}
 
-	cfg, err := repo.Config()
-	if err != nil {
+	gitName := viper.GetString("git-name")
+	if gitName == "" {
+		fmt.Println("No git name was given in config")
 		return err
 	}
 
-	_, commitErr := worktree.Commit(fmt.Sprint("promoting %s/%s in %s to %s", fileName, service, env, tag), &git.CommitOptions{
+	gitEmail := viper.GetString("git-email")
+	if gitEmail == "" {
+		fmt.Println("No git email was given in config")
+		return err
+	}
+
+	commitMessage := fmt.Sprintf("promoting %s/%s in %s to %s", project, service, env, tag)
+	_, commitErr := worktree.Commit(commitMessage, &git.CommitOptions{
 		Author: &object.Signature{
-			Name:  cfg.User.Name,
-			Email: cfg.User.Email,
+			Name:  gitName,
+			Email: gitEmail,
+			When:  time.Now(),
 		},
 	})
 
