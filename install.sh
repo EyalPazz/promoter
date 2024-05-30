@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the download URL
-URL="https://github.com/EyalPazz/promoter/releases/download/v0.1.0/promoter"
+URL="https://github.com/EyalPazz/promoter/releases/download/v0.1.3/promoter"
 
 # Define the install path
 INSTALL_PATH="/usr/local/bin/promoter"
