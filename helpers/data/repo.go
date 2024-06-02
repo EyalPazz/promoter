@@ -78,7 +78,7 @@ func RefreshRepo(hasPassphrase bool) {
 		os.Exit(1)
 	}
 
-	fmt.Println("Repository successfully updated")
+	fmt.Println("Successfully Fetched Recent Updates From Manifest")
 }
 
 func ManifestRepoExists() (bool, error) {

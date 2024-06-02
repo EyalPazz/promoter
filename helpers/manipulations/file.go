@@ -14,7 +14,7 @@ type ServiceConfig map[string]interface{}
 
 const imageTagKey = "imageTag"
 
-func ChangeServiceTag(project string, service string, env string, tag string) error {
+func ChangeServiceTag(project string, service string, env string, tag string, projectFilePath string) error {
 
 	repoPath, err := data.GetRepoPath()
 	if err != nil {
@@ -22,13 +22,15 @@ func ChangeServiceTag(project string, service string, env string, tag string) er
 		return err
 	}
 
-	projectFile, err := getProjectFile(repoPath, project, service, env)
-	if err != nil {
-		fmt.Println(err)
-		return err
+	if projectFilePath == "" {
+		projectFilePath, err = getProjectFile(repoPath, project, service, env)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
 	}
 
-	yamlFile, err := os.ReadFile(projectFile)
+	yamlFile, err := os.ReadFile(projectFilePath)
 	if err != nil {
 		fmt.Println("Error reading YAML file:", err)
 		return err
@@ -52,7 +54,7 @@ func ChangeServiceTag(project string, service string, env string, tag string) er
 		return err
 	}
 
-	err = os.WriteFile(projectFile, updatedYAML, 0644)
+	err = os.WriteFile(projectFilePath, updatedYAML, 0644)
 	if err != nil {
 		return err
 	}

@@ -13,11 +13,12 @@ import (
 
 var (
 	// Used for flags.
-	cfgFile string
-	project string
-	service string
-	env     string
-	tag     string
+	cfgFile     string
+	project     string
+	service     string
+	env         string
+	tag         string
+	projectFile string
 
 	rootCmd = &cobra.Command{
 		Use:   "promoter",
@@ -58,7 +59,7 @@ var (
 				return
 			}
 
-			err = manipulations.ChangeServiceTag(project, service, env, tag)
+			err = manipulations.ChangeServiceTag(project, service, env, tag, projectFile)
 			if err != nil {
 				fmt.Print(err)
 				return
@@ -92,6 +93,7 @@ func init() {
 	rootCmd.Flags().StringVar(&service, "service", "", "Service name (required)")
 	rootCmd.Flags().StringVar(&env, "env", "", "Environment name (required)")
 	rootCmd.Flags().StringVar(&tag, "tag", "", "Tag name")
+	rootCmd.Flags().StringVar(&projectFile, "project-file", "", "Project File")
 	rootCmd.PersistentFlags().Bool("passphrase", false, "Whether or not to prompt for ssh key passphrase")
 
 	rootCmd.MarkFlagRequired("project")
