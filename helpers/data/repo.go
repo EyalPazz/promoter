@@ -23,6 +23,15 @@ func GetRepoPath() (string, error) {
 }
 
 func RefreshRepo(hasPassphrase bool) {
+
+	if val, _ := ManifestRepoExists(); !val {
+		err := cloneRepository(hasPassphrase)
+		if err != nil {
+			fmt.Println("Error Cloning Git Repo", err)
+			os.Exit(1)
+		}
+	}
+
 	auth, err := gitAuth.GetSSHAuth(hasPassphrase)
 	if err != nil {
 		fmt.Println("Error Authenticating With Git Remote:", err)
@@ -94,7 +103,7 @@ func ManifestRepoExists() (bool, error) {
 	return true, nil
 }
 
-func CloneRepository(hasPassphrase bool) error {
+func cloneRepository(hasPassphrase bool) error {
 	auth, err := gitAuth.GetSSHAuth(hasPassphrase)
 	if err != nil {
 		return err

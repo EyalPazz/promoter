@@ -12,10 +12,6 @@ import (
 
 type ServiceConfig map[string]interface{}
 
-// type Config struct {
-//     Properties map[string]ServiceConfig
-// }
-
 const imageTagKey = "imageTag"
 
 func ChangeServiceTag(project string, service string, env string, tag string) error {
@@ -26,8 +22,12 @@ func ChangeServiceTag(project string, service string, env string, tag string) er
 		return err
 	}
 
-	// TODO: ADD .yaml / .yml support
-	projectFile := filepath.Join(repoPath, project+"/"+service+"/"+"values-"+env+".yaml")
+	projectFile, err := getProjectFile(repoPath, project, service, env)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
 	yamlFile, err := os.ReadFile(projectFile)
 	if err != nil {
 		fmt.Println("Error reading YAML file:", err)
@@ -57,4 +57,20 @@ func ChangeServiceTag(project string, service string, env string, tag string) er
 		return err
 	}
 	return nil
+}
+
+func getProjectFile(repoPath, project, service, env string) (string, error) {
+	fileExtensions := []string{".yaml", ".yml"}
+	for _, ext := range fileExtensions {
+		projectFile := filepath.Join(repoPath, project, service, "values-"+env+ext)
+		if fileExists(projectFile) {
+			return projectFile, nil
+		}
+	}
+	return "", fmt.Errorf("Project File Does Not exist")
+}
+
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	return !os.IsNotExist(err)
 }

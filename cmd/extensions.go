@@ -15,34 +15,12 @@ var (
 )
 
 func Extend(rootCmd *cobra.Command) {
-	rootCmd.AddCommand(ManifestRepoCloneCmd)
 
 	GetLatestImageCmd.Flags().StringVarP(&repositoryName, "repository", "r", "", "ECR repository name")
 	GetLatestImageCmd.Flags().StringVarP(&region, "region", "R", "", "AWS region")
 	rootCmd.AddCommand(GetLatestImageCmd)
 
 	rootCmd.AddCommand(RefreshManifestRepoCmd)
-}
-
-var ManifestRepoCloneCmd = &cobra.Command{
-	Use:   "clone-manifest",
-	Short: "Authenticate with Git provider using SSH key",
-	Long:  "Authenticate with Git provider using SSH key to perform Git operations.",
-	Run: func(cmd *cobra.Command, args []string) {
-
-		passphraseFlag, err := cmd.Root().PersistentFlags().GetBool("passphrase")
-		if err != nil {
-			fmt.Print(err)
-		}
-		cloneErr := data.CloneRepository(passphraseFlag)
-
-		if cloneErr != nil {
-			fmt.Println("Error cloning manifest repo:", cloneErr)
-			return
-		}
-
-		fmt.Println("Successfully cloned manifest repo")
-	},
 }
 
 var GetLatestImageCmd = &cobra.Command{

@@ -25,6 +25,13 @@ var (
 		Long:  `promoter is a CLI tool to easily deploy services across different environments`,
 		Run: func(cmd *cobra.Command, args []string) {
 
+			passphrase, err := cmd.Flags().GetBool("passphrase")
+			if err != nil {
+				fmt.Print(err)
+				return
+			}
+			data.RefreshRepo(passphrase)
+
 			if repositoryName == "" {
 				repositoryName = viper.GetString("repository")
 			}
@@ -51,7 +58,7 @@ var (
 				return
 			}
 
-			err := manipulations.ChangeServiceTag(project, service, env, tag)
+			err = manipulations.ChangeServiceTag(project, service, env, tag)
 			if err != nil {
 				fmt.Print(err)
 				return
