@@ -18,6 +18,12 @@ jobs:
         with:
           go-version: 1.22
 
+      - name: Create SSH Key File For Tests
+        run: |
+          cat ${{secrets.GOOD_SSH_KEY}} >>  ~/good.ssh
+          cat ${{secrets.BAD_SSH_KEY}} >> ~/bad.ssh
+          chmod 600 ~/good.ssh ~/bad.ssh
+
       - name: Build binary
         run: go build -o promoter
 

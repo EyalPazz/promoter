@@ -65,14 +65,14 @@ func getProjectFile(repoPath, project, service, env string) (string, error) {
 	fileExtensions := []string{".yaml", ".yml"}
 	for _, ext := range fileExtensions {
 		projectFile := filepath.Join(repoPath, project, service, "values-"+env+ext)
-		if fileExists(projectFile) {
+		if FileExists(projectFile) {
 			return projectFile, nil
 		}
 	}
 	return "", fmt.Errorf("Project File Does Not exist")
 }
 
-func fileExists(filename string) bool {
+func FileExists(filename string) bool {
 	_, err := os.Stat(filename)
 	return !os.IsNotExist(err)
 }
