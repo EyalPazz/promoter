@@ -69,15 +69,15 @@ var (
 				return
 			}
 
-			// passphraseFlag, err := cmd.PersistentFlags().GetBool("passphrase")
-			// if err != nil {
-			// 	fmt.Print(err)
-			// }
-			//
-			// err = manipulations.CommitRepoChange(project, service, env, tag, passphraseFlag)
-			// if err != nil {
-			// 	fmt.Print(err)
-			// }
+			passphraseFlag, err := cmd.PersistentFlags().GetBool("passphrase")
+			if err != nil {
+				fmt.Print(err)
+			}
+
+			err = manipulations.CommitRepoChange(project, service, env, tag, passphraseFlag)
+			if err != nil {
+				fmt.Print(err)
+			}
 
 		},
 	}
