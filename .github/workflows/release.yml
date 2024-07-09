@@ -25,7 +25,7 @@ jobs:
           chmod 600 ~/good.ssh ~/bad.ssh
 
       - name: Test
-        working-directory: test/
+        working-directory: tests/
         run: go test
 
       - name: Build binary
