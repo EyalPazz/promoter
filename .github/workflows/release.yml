@@ -20,8 +20,8 @@ jobs:
 
       - name: Create SSH Key File For Tests
         run: |
-          echo ${{secrets.GOOD_SSH_KEY}} >>  ~/good.ssh
-          echo ${{secrets.BAD_SSH_KEY}} >> ~/bad.ssh
+          echo "${{secrets.GOOD_SSH_KEY}}" >>  ~/good.ssh
+          echo "${{secrets.BAD_SSH_KEY}}" >> ~/bad.ssh
           chmod 600 ~/good.ssh ~/bad.ssh
 
       - name: Test
