@@ -14,8 +14,8 @@ func TestFileExists(t *testing.T) {
 		filePath      string
 		expectedValue bool
 	}{
-		{"Valid Path", "/home/hilma/good.ssh", true},
-		{"Invalid Path", "/homa/hilma/I_DONT_EXIST", false},
+		{"Valid Path", "~/good.ssh", true},
+		{"Invalid Path", "I_DONT_EXIST", false},
 	}
 
 	for _, tt := range tests {
