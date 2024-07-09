@@ -14,6 +14,11 @@ const (
 	DefaultPromoterDir = "/promoter-data/repositories/"
 )
 
+// NOTICE: this determines the convention for image repository names
+func GetImageRepository(project string, service string) string {
+	return project + "-" + service
+}
+
 func GetRepoPath() (string, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {

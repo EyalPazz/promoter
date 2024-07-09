@@ -28,22 +28,23 @@ Create a configuration file named .promoter.yaml in your home directory (~/.prom
 
 ```yaml
 git-email: <Your Git Email>
+git-name: <Your Git Name>
 manifest-repo-url: <K8s/Helm Files Repo URL>
 ssh-key-path: <GitHub SSH Key Path>
 region: <AWS Region of Your ECR Repo>
-repository-name: <Name of Your ECR Repository>
 ```
 
 Your manifest project structure should follow this format:
 
 ```perl
-chart-repo/
-  ├── project1/
-  │   └── service/
-  │       └── values-${env}.yaml
-  └── project2/
-      └── service/
-          └── values-${env}.yaml
+argo/
+  apps/
+      ├── project1/
+      │   └── env/
+      │       └── values.yaml
+      └── project2/
+          └── env/
+              └── values.yaml
 ```
 
 ## To-Do List

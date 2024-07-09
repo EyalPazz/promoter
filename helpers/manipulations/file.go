@@ -10,11 +10,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type ServiceConfig map[string]interface{}
+type Config map[interface{}]interface{}
 
 const imageTagKey = "imageTag"
 
-func ChangeServiceTag(project string, service string, env string, tag string, projectFilePath string) error {
+func ChangeServiceTag(project string, service string, env string, tag string, projectFilePath string, manifestRepoRoot string) error {
 
 	repoPath, err := data.GetRepoPath()
 	if err != nil {
@@ -23,9 +23,8 @@ func ChangeServiceTag(project string, service string, env string, tag string, pr
 	}
 
 	if projectFilePath == "" {
-		projectFilePath, err = getProjectFile(repoPath, project, service, env)
+		projectFilePath, err = getProjectFile(repoPath, project, env, manifestRepoRoot)
 		if err != nil {
-			fmt.Println(err)
 			return err
 		}
 	}
@@ -36,17 +35,22 @@ func ChangeServiceTag(project string, service string, env string, tag string, pr
 		return err
 	}
 
-	var config ServiceConfig
+	var config Config
 	err = yaml.Unmarshal(yamlFile, &config)
 	if err != nil {
 		fmt.Println("Error unmarshalling YAML:", err)
 		return err
 	}
 
-	if _, ok := config[imageTagKey]; ok {
-		config[imageTagKey] = tag
+	app, err := findApplication(&config, service)
+	if err != nil {
+		return err
+	}
+
+	if _, ok := app[imageTagKey]; ok {
+		app[imageTagKey] = tag
 	} else {
-		return errors.New("Image Tag Not found in values file")
+		return errors.New("Image Tag Not found in the service's fields")
 	}
 
 	updatedYAML, err := yaml.Marshal(&config)
@@ -61,10 +65,38 @@ func ChangeServiceTag(project string, service string, env string, tag string, pr
 	return nil
 }
 
-func getProjectFile(repoPath, project, service, env string) (string, error) {
+func findApplication(config *Config, service string) (map[string]interface{}, error) {
+	if _, ok := (*config)["applications"]; !ok {
+		return nil, errors.New("application field not found in values file")
+	}
+
+	applications, ok := (*config)["applications"].([]interface{})
+	if !ok {
+		return nil, errors.New("applications field is not a list")
+	}
+
+	for _, app := range applications {
+		appMap, ok := app.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		name, ok := appMap["name"].(string)
+		if !ok {
+			continue
+		}
+
+		if name == service {
+			return appMap, nil
+		}
+	}
+	return nil, fmt.Errorf("service with name '%s' not found", service)
+}
+
+func getProjectFile(repoPath string, project string, env string, manifestRepoRoot string) (string, error) {
 	fileExtensions := []string{".yaml", ".yml"}
 	for _, ext := range fileExtensions {
-		projectFile := filepath.Join(repoPath, project, service, "values-"+env+ext)
+		projectFile := filepath.Join(repoPath, manifestRepoRoot, project, env, "values"+ext)
 		if FileExists(projectFile) {
 			return projectFile, nil
 		}
