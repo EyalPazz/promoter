@@ -96,13 +96,13 @@ func init() {
 	rootCmd.Flags().StringVar(&project, "project", "", "Project name (required)")
 	rootCmd.Flags().StringVar(&service, "service", "", "Service name (required)")
 	rootCmd.Flags().StringVar(&env, "env", "", "Environment name (required)")
-	rootCmd.Flags().StringVar(&imageRepo, "image-repository", "", "Image repository name")
-	rootCmd.Flags().StringVar(&tag, "tag", "", "Tag name")
-	rootCmd.Flags().StringVar(&projectFile, "project-file", "", "Project File")
+	rootCmd.PersistentFlags().StringVar(&imageRepo, "image-repository", "", "Image repository name")
+	rootCmd.PersistentFlags().StringVar(&tag, "tag", "", "Tag name")
+	rootCmd.PersistentFlags().StringVar(&projectFile, "project-file", "", "Project File")
 	rootCmd.PersistentFlags().Bool("passphrase", false, "Whether or not to prompt for ssh key passphrase")
 
-	rootCmd.MarkFlagRequired("project")
 	rootCmd.MarkFlagRequired("service")
+	rootCmd.MarkFlagRequired("project")
 	rootCmd.MarkFlagRequired("env")
 }
 
