@@ -1,9 +1,9 @@
 package tests
 
 import (
+	"os"
+	"path"
 	"promoter/helpers/manipulations"
-    "os"
-    "path"
 	"testing"
 )
 
@@ -22,7 +22,7 @@ func TestFileExists(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-            home, _ := os.UserHomeDir()
+			home, _ := os.UserHomeDir()
 			exists := manipulations.FileExists(path.Join(home, tt.filePath))
 
 			if tt.expectedValue != exists {

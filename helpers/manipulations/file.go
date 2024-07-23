@@ -13,7 +13,7 @@ const imageTagKey = "imageTag"
 
 func ChangeServiceTag(project string, service string, env string, tag string, projectFilePath string, manifestRepoRoot string) error {
 
-    config, err := data.GetProjectConfig(project, env, projectFilePath, manifestRepoRoot )
+	config, projectFilePath, err := data.GetProjectConfig(project, env, projectFilePath, manifestRepoRoot)
 	if err != nil {
 		return err
 	}
@@ -23,10 +23,10 @@ func ChangeServiceTag(project string, service string, env string, tag string, pr
 		return err
 	}
 
-    if app[imageTagKey] == tag {
-        fmt.Println("Service is already at latest/input tag")
-        return nil
-    }
+	if app[imageTagKey] == tag {
+		fmt.Println("Service is already at latest/input tag")
+		return nil
+	}
 
 	if _, ok := app[imageTagKey]; ok {
 		app[imageTagKey] = tag
@@ -45,4 +45,3 @@ func ChangeServiceTag(project string, service string, env string, tag string, pr
 	}
 	return nil
 }
-

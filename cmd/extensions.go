@@ -59,15 +59,15 @@ var RefreshManifestRepoCmd = &cobra.Command{
 		passphraseFlag, err := cmd.Root().PersistentFlags().GetBool("passphrase")
 		if err != nil {
 			fmt.Print(err)
-            return
+			return
 		}
 		data.RefreshRepo(passphraseFlag)
 	},
 }
 
 var GetApplicationsCmd = &cobra.Command{
-    Use: "get-applications",
-    Short: "Get All Applications in a certain project", 
+	Use:   "get-applications",
+	Short: "Get All Applications in a certain project",
 	Long:  "Get All Applications in a certain project",
 	Run: func(cmd *cobra.Command, args []string) {
 		env, err := cmd.Flags().GetString("env")
@@ -75,18 +75,17 @@ var GetApplicationsCmd = &cobra.Command{
 		projectFile, err := cmd.Root().PersistentFlags().GetString("project-file")
 		if err != nil {
 			fmt.Print(err)
-            return
+			return
 		}
 
-        applications, err := data.GetApplications(project, env, projectFile, viper.GetString("manifestRepoRoot"))
+		applications, err := data.GetApplications(project, env, projectFile, viper.GetString("manifestRepoRoot"))
 		if err != nil {
 			fmt.Print(err)
-            return
+			return
 		}
 
-        for _, app := range applications {
-            fmt.Println("* " + app)
-        }
+		for _, app := range applications {
+			fmt.Println("* " + app)
+		}
 	},
-
 }

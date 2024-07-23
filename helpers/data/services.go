@@ -1,14 +1,14 @@
 package data
 
 import (
-    "errors"
+	"errors"
 )
 
 type Config map[interface{}]interface{}
 
 func GetApplications(project string, env string, projectFilePath string, manifestRepoRoot string) ([]string, error) {
 
-    config, err := GetProjectConfig(project, env, projectFilePath, manifestRepoRoot )
+	config, _, err := GetProjectConfig(project, env, projectFilePath, manifestRepoRoot)
 	if err != nil {
 		return nil, err
 	}
@@ -22,7 +22,7 @@ func GetApplications(project string, env string, projectFilePath string, manifes
 		return nil, errors.New("applications field is not a list")
 	}
 
-    var services []string
+	var services []string
 
 	for _, app := range applications {
 		appMap, ok := app.(map[string]interface{})
@@ -32,7 +32,7 @@ func GetApplications(project string, env string, projectFilePath string, manifes
 			continue
 		}
 
-        services = append(services, name)
+		services = append(services, name)
 	}
 	return services, nil
 }
