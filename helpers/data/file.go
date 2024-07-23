@@ -1,10 +1,10 @@
 package data
 
 import (
-    "fmt"
+	"errors"
+	"fmt"
+	"os"
 	"path/filepath"
-    "os"
-    "errors"
 
 	"gopkg.in/yaml.v3"
 )
@@ -20,34 +20,32 @@ func GetProjectFile(repoPath string, project string, env string, manifestRepoRoo
 	return "", fmt.Errorf("Project File Does Not exist")
 }
 
-func GetProjectConfig(project string,  env string , projectFilePath string, manifestRepoRoot string) (*Config, error){
+func GetProjectConfig(project string, env string, projectFilePath string, manifestRepoRoot string) (*Config, string, error) {
 	repoPath, err := GetRepoPath()
 	if err != nil {
-		fmt.Printf("Error getting repository path: %s\n", err)
-		return nil, err
+		return nil, "" , fmt.Errorf("Error getting repository path: %s\n", err)
 	}
 
 	if projectFilePath == "" {
 		projectFilePath, err = GetProjectFile(repoPath, project, env, manifestRepoRoot)
 		if err != nil {
-            return nil, err
+			return nil, "", err
 		}
 	}
 
 	yamlFile, err := os.ReadFile(projectFilePath)
 	if err != nil {
-		fmt.Println("Error reading YAML file:", err)
-            return nil, err
+		return nil, "", err
 	}
 
 	var config Config
 	err = yaml.Unmarshal(yamlFile, &config)
 	if err != nil {
-		fmt.Println("Error unmarshalling YAML:", err)
-            return nil, err
+		return nil, "", fmt.Errorf("Error unmarshalling YAML: %v", err)
+
 	}
 
-    return &config, nil
+	return &config, projectFilePath, nil
 
 }
 
