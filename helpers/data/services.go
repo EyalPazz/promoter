@@ -6,7 +6,32 @@ import (
 
 type Config map[interface{}]interface{}
 
-func GetApplications(project string, env string, projectFilePath string, manifestRepoRoot string) ([]string, error) {
+func GetServiceImage(service string, project string, env string, projectFilePath string, manifestRepoRoot string) (string, error) {
+	applications, err := GetApplications(project, env, projectFilePath, manifestRepoRoot)
+
+	if err != nil {
+		return "", err
+	}
+
+	for _, app := range applications {
+		appMap, ok := app.(map[string]interface{})
+		name, ok := appMap["name"].(string)
+		if !ok || name != service {
+			continue
+		}
+
+		image, ok := appMap["image"].(string)
+		if !ok {
+			return "", errors.New("Can't Find a valid image in application's values")
+		}
+		return image, nil
+	}
+
+	return "", errors.New("Can't find the requested service in the project's values file")
+
+}
+
+func GetApplications(project string, env string, projectFilePath string, manifestRepoRoot string) ([]interface{}, error) {
 
 	config, _, err := GetProjectConfig(project, env, projectFilePath, manifestRepoRoot)
 	if err != nil {
@@ -20,6 +45,17 @@ func GetApplications(project string, env string, projectFilePath string, manifes
 	applications, ok := (*config)["applications"].([]interface{})
 	if !ok {
 		return nil, errors.New("applications field is not a list")
+	}
+
+	return applications, nil
+}
+
+func GetApplicationsNames(project string, env string, projectFilePath string, manifestRepoRoot string) ([]string, error) {
+
+	applications, err := GetApplications(project, env, projectFilePath, manifestRepoRoot)
+
+	if err != nil {
+		return nil, err
 	}
 
 	var services []string

@@ -23,7 +23,7 @@ func GetProjectFile(repoPath string, project string, env string, manifestRepoRoo
 func GetProjectConfig(project string, env string, projectFilePath string, manifestRepoRoot string) (*Config, string, error) {
 	repoPath, err := GetRepoPath()
 	if err != nil {
-		return nil, "" , fmt.Errorf("Error getting repository path: %s\n", err)
+		return nil, "", fmt.Errorf("Error getting repository path: %s\n", err)
 	}
 
 	if projectFilePath == "" {

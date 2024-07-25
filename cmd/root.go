@@ -47,7 +47,11 @@ var (
 			// IMPORTANT: Notice the convention for registry names
 			var repoName string
 			if imageRepo == "" {
-				repoName = data.GetImageRepository(project, service)
+				repoName, err = data.GetImageRepository(project, service, env, projectFile)
+				if err != nil {
+					fmt.Print(err)
+					return
+				}
 			} else {
 				repoName = imageRepo
 			}

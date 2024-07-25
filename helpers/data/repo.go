@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	gitAuth "promoter/helpers/auth"
+	"strings"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/viper"
@@ -15,8 +16,18 @@ const (
 )
 
 // NOTICE: this determines the convention for image repository names
-func GetImageRepository(project string, service string) string {
-	return project + "-" + service
+func GetImageRepository(project string, service string, env string, projectFilePath string) (string, error) {
+	image, err := GetServiceImage(service, project, env, projectFilePath, viper.GetString("manifestRepoRoot"))
+	if err != nil {
+		return "", errors.New("Unable to retrieve the input service' image")
+	}
+
+	imageParts := strings.Split(image, "/")
+	if len(imageParts) < 2 {
+		return "", errors.New("Invalid Image")
+	}
+
+	return imageParts[1], nil
 }
 
 func GetRepoPath() (string, error) {
