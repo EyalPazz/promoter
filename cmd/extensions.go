@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"promoter/helpers/data"
 
@@ -15,40 +14,12 @@ var (
 
 func Extend(rootCmd *cobra.Command) {
 
-	GetLatestImageCmd.Flags().StringVarP(&region, "region", "R", "", "AWS region")
-	rootCmd.AddCommand(GetLatestImageCmd)
-
 	rootCmd.AddCommand(RefreshManifestRepoCmd)
 
 	GetApplicationsCmd.Flags().String("project", "", "Project name (required)")
 	GetApplicationsCmd.Flags().String("service", "", "Service name (required)")
 	GetApplicationsCmd.Flags().String("env", "", "Environment name (required)")
 	rootCmd.AddCommand(GetApplicationsCmd)
-}
-
-var GetLatestImageCmd = &cobra.Command{
-	Use:   "latest",
-	Short: "Get Latest Image from desired repo",
-	Long:  "Get Latest Image from desired repo",
-	Run: func(cmd *cobra.Command, args []string) {
-
-		if region == "" {
-			region = viper.GetString("region")
-		}
-
-		if region == "" {
-			fmt.Println("Error: region must be specified either as flags or in the config file")
-			return
-		}
-		ctx := context.Background()
-		imageDetail, err := data.GetLatestImage(ctx, data.GetImageRepository(project, service), region)
-		if err != nil {
-			fmt.Println("Error Getting Latest Image From Repo:", err)
-			return
-		}
-
-		fmt.Println(imageDetail.ImageTags)
-	},
 }
 
 var RefreshManifestRepoCmd = &cobra.Command{
@@ -78,7 +49,7 @@ var GetApplicationsCmd = &cobra.Command{
 			return
 		}
 
-		applications, err := data.GetApplications(project, env, projectFile, viper.GetString("manifestRepoRoot"))
+		applications, err := data.GetApplicationsNames(project, env, projectFile, viper.GetString("manifestRepoRoot"))
 		if err != nil {
 			fmt.Print(err)
 			return
