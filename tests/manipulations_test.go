@@ -3,7 +3,7 @@ package tests
 import (
 	"os"
 	"path"
-	"promoter/helpers/manipulations"
+	"promoter/helpers/data"
 	"testing"
 )
 
@@ -23,7 +23,7 @@ func TestFileExists(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			home, _ := os.UserHomeDir()
-			exists := manipulations.FileExists(path.Join(home, tt.filePath))
+			exists := data.FileExists(path.Join(home, tt.filePath))
 
 			if tt.expectedValue != exists {
 				t.Errorf("expected %v but got %v", tt.expectedValue, exists)
