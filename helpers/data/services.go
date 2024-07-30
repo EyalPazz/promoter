@@ -16,7 +16,8 @@ func GetServiceImage(service string, project string, env string, projectFilePath
 	for _, app := range applications {
 		appMap, ok := app.(map[string]interface{})
 		name, ok := appMap["name"].(string)
-		if !ok || name != service {
+		appType, ok := appMap["type"].(string)
+		if !ok || name+"-"+appType != service {
 			continue
 		}
 
@@ -68,7 +69,12 @@ func GetApplicationsNames(project string, env string, projectFilePath string, ma
 			continue
 		}
 
-		services = append(services, name)
+		appType, ok := appMap["type"].(string)
+		if !ok {
+			continue
+		}
+
+		services = append(services, name+"-"+appType)
 	}
 	return services, nil
 }

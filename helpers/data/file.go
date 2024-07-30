@@ -75,7 +75,12 @@ func FindApplication(config *Config, service string) (map[string]interface{}, er
 			continue
 		}
 
-		if name == service {
+		appType, ok := appMap["type"].(string)
+		if !ok {
+			continue
+		}
+
+		if name+"-"+appType == service {
 			return appMap, nil
 		}
 	}

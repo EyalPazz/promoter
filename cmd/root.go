@@ -62,6 +62,7 @@ var (
 					return
 				}
 				tag = latestImage.ImageTags[0]
+				fmt.Println("The latest image is: ", tag)
 			} else if err := data.ImageExists(ctx, repoName, tag, region); err != nil {
 				fmt.Println(err)
 				return
@@ -82,6 +83,7 @@ var (
 			if err != nil {
 				fmt.Print(err)
 			}
+			fmt.Println("Success!")
 
 		},
 	}

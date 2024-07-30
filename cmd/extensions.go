@@ -41,11 +41,12 @@ var GetApplicationsCmd = &cobra.Command{
 	Short: "Get All Applications in a certain project",
 	Long:  "Get All Applications in a certain project",
 	Run: func(cmd *cobra.Command, args []string) {
-		env, err := cmd.Flags().GetString("env")
-		project, err := cmd.Flags().GetString("project")
-		projectFile, err := cmd.Root().PersistentFlags().GetString("project-file")
-		if err != nil {
-			fmt.Print(err)
+		env, _ := cmd.Flags().GetString("env")
+		project, _ := cmd.Flags().GetString("project")
+		projectFile, _ := cmd.Root().PersistentFlags().GetString("project-file")
+
+		if projectFile == "" && (env == "" || project == "") {
+			fmt.Print("You Need to either provide both env and project flags, or the project-file path")
 			return
 		}
 
