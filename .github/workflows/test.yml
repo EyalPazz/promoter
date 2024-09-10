@@ -1,9 +1,10 @@
-name: Release
+name: Test
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
+
 
 jobs:
   release:

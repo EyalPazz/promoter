@@ -1,0 +1,82 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.22
+
+      - name: Build MacOS Intel Chip binary
+        run: GOOS=darwin GOARCH=amd64 go build -o promoter_darwin_amd64
+
+      - name: Build MacOS Silicon Chip binary
+        run: GOOS=darwin GOARCH=arm64 go build -o promoter_darwin_arm64
+
+      - name: Build Linux Intel Chip binary
+        run: GOOS=linux GOARCH=amd64 go build -o promoter_linux_amd64
+
+      - name: Build Linux ARM Chip binary
+        run: GOOS=linux GOARCH=arm64 go build -o promoter_linux_arm64
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset - MacOS Intel
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./promoter_darwin_amd64
+          asset_name: promoter_darwin_amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset - MacOS Silicon
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./promoter_darwin_arm64
+          asset_name: promoter_darwin_arm64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset - Linux Intel
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./promoter_linux_amd64
+          asset_name: promoter_linux_amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset - Linux ARM
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./promoter_linux_arm64
+          asset_name: promoter_linux_arm64
+          asset_content_type: application/octet-stream
