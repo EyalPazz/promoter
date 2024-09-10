@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"promoter/types"
 	"promoter/utils/data"
+	"promoter/utils/factories"
 	"promoter/utils/manipulations"
 	"strings"
 
@@ -94,7 +95,17 @@ func processService(ctx context.Context, project string, service string, env str
 	if err != nil {
 		return err
 	}
-	latestImage, err := data.GetLatestImage(ctx, repoName, region)
+
+    registryFactory := &factories.RegistryFactory{}
+
+    // TODO: take type from config after implementing more registries
+    ecrClient, err := registryFactory.InitializeRegistry(ctx , "ecr", region)
+	if err != nil {
+		return err
+	}
+
+
+	latestImage, err := ecrClient.GetLatestImage(ctx, repoName)
 	if err != nil {
 		return err
 	}

@@ -11,25 +11,24 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/ecr/types"
 )
 
-func initializeECRClient(ctx context.Context, region string) (*ecr.Client, error) {
+type ECRRegistryClient struct {
+    client *ecr.Client
+}
+
+func NewECRRegistryClient(ctx context.Context, region string) (*ECRRegistryClient, error) {
 	cfg, err := config.LoadDefaultConfig(ctx, config.WithRegion(region))
 	if err != nil {
 		return nil, fmt.Errorf("error loading AWS configuration: %w", err)
 	}
-	return ecr.NewFromConfig(cfg), nil
+    return &ECRRegistryClient{client : ecr.NewFromConfig(cfg)}, nil
 }
 
-func GetLatestImage(ctx context.Context, repositoryName string, region string) (*types.ImageDetail, error) {
-	svc, err := initializeECRClient(ctx, region)
-	if err != nil {
-		return nil, err
-	}
-
+func (e *ECRRegistryClient) GetLatestImage (ctx context.Context, repositoryName string) (*types.ImageDetail, error) {
 	input := &ecr.DescribeImagesInput{
 		RepositoryName: aws.String(repositoryName),
 	}
 
-	result, err := svc.DescribeImages(ctx, input)
+	result, err := e.client.DescribeImages(ctx, input)
 	if err != nil {
 		return nil, fmt.Errorf("error describing images: %w", err)
 	}
@@ -48,11 +47,7 @@ func GetLatestImage(ctx context.Context, repositoryName string, region string) (
 	return &latestImage, nil
 }
 
-func ImageExists(ctx context.Context, repositoryName, imageTag, region string) error {
-	svc, err := initializeECRClient(ctx, region)
-	if err != nil {
-		return err
-	}
+func (e *ECRRegistryClient) ImageExists(ctx context.Context, repositoryName string, imageTag string) error {
 
 	input := &ecr.DescribeImagesInput{
 		RepositoryName: aws.String(repositoryName),
@@ -63,7 +58,7 @@ func ImageExists(ctx context.Context, repositoryName, imageTag, region string) e
 		},
 	}
 
-	_, err = svc.DescribeImages(ctx, input)
+    _, err := e.client.DescribeImages(ctx, input)
 	if err != nil {
 		return fmt.Errorf("error describing images: %w", err)
 	}
