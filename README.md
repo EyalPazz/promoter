@@ -16,10 +16,10 @@ To promote a service to the production environment with the latest image tag, us
 promoter --project <project_name> --service <service_name> --env production
 ```
 
-To specify a custom image tag, use the --tag option:
+To promote all services of a project to the production environment with the latest image tag, use:
 
 ```bash
-promoter --project <project_name> --service <service_name> --env production --tag <image_tag>
+promoter --project <project_name> --env production
 ```
 
 ## Configuration
@@ -29,9 +29,9 @@ Create a configuration file named .promoter.yaml in your home directory (~/.prom
 ```yaml
 git-email: <Your Git Email>
 git-name: <Your Git Name>
-manifest-repo-url: <K8s/Helm Files Repo URL>
-ssh-key-path: <GitHub SSH Key Path>
-region: <AWS Region of Your ECR Repo>
+manifest-repo-url: <Config Files Repo URL>
+ssh-key-path: <Git SSH Key Path>
+region: <Region of Your Container Registry>
 ```
 
 Your manifest project structure should follow this format:
@@ -49,7 +49,7 @@ argo/
 
 ## To-Do List
 
-- [ ] 1: Make Deployment Platform agnostic
+- [x] 1: Make Deployment Platform agnostic
 - [ ] 2: Add Tests
 - [ ] 3: Expend to more providers and manifest repo structures
 - [ ] 4: Write documentation
