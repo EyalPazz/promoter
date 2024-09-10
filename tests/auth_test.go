@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"promoter/helpers/auth"
+	"promoter/utils/auth"
 
 	"testing"
 

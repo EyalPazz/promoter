@@ -3,7 +3,7 @@ package tests
 import (
 	"os"
 	"path"
-	"promoter/helpers/data"
+	"promoter/utils/data"
 	"testing"
 )
 

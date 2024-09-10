@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	gitAuth "promoter/helpers/auth"
+	gitAuth "promoter/utils/auth"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
@@ -17,9 +17,10 @@ const (
 
 // NOTICE: this determines the convention for image repository names
 func GetImageRepository(project string, service string, env string, projectFilePath string) (string, error) {
+
 	image, err := GetServiceImage(service, project, env, projectFilePath, viper.GetString("manifestRepoRoot"))
 	if err != nil {
-		return "", errors.New("Unable to retrieve the input service' image")
+		return "", fmt.Errorf("Unable to retrieve the input service's image : %s", err)
 	}
 
 	imageParts := strings.Split(image, "/")

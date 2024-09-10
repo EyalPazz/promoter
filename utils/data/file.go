@@ -54,17 +54,17 @@ func FileExists(filename string) bool {
 	return !os.IsNotExist(err)
 }
 
-func FindApplication(config *Config, service string) (map[string]interface{}, error) {
+func FindService(config *Config, service string) (map[string]interface{}, error) {
 	if _, ok := (*config)["applications"]; !ok {
 		return nil, errors.New("application field not found in values file")
 	}
 
-	applications, ok := (*config)["applications"].([]interface{})
+	services, ok := (*config)["applications"].([]interface{})
 	if !ok {
 		return nil, errors.New("applications field is not a list")
 	}
 
-	for _, app := range applications {
+	for _, app := range services {
 		appMap, ok := app.(map[string]interface{})
 		if !ok {
 			continue
