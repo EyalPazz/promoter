@@ -42,7 +42,7 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 
 	// TODO: Think about the trade-offs in making this async
 	for _, service := range serviceList {
-		err := processService(ctx, project, service, env, region, projectFile, changeLog)
+		err := processService(ctx, project, service, env, region, projectFile, &changeLog)
 		if err != nil {
 			fmt.Println(err)
 			fmt.Println("Reverting Changes...")
@@ -90,7 +90,7 @@ func handleRepoActions(project string, changeLog *[]types.ServiceChanges, env st
 	return nil
 }
 
-func processService(ctx context.Context, project string, service string, env string, region string, projectFile string, changeLog []types.ServiceChanges) error {
+func processService(ctx context.Context, project string, service string, env string, region string, projectFile string, changeLog *[]types.ServiceChanges) error {
 	repoName, err := data.GetImageRepository(project, service, env, projectFile)
 	if err != nil {
 		return err
@@ -116,7 +116,7 @@ func processService(ctx context.Context, project string, service string, env str
 		return err
 	}
 	if didChange {
-		changeLog = append(changeLog, types.ServiceChanges{
+		*changeLog = append(*changeLog, types.ServiceChanges{
 			Name:   service,
 			NewTag: tag,
 		})
