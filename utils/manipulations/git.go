@@ -61,9 +61,9 @@ func discardChanges(repoPath string) error {
 }
 
 func composeCommitMsg(changes []types.ServiceChanges, env string, project string) string {
-	msg := fmt.Sprintf(`promotion(%s): %s \n`, env, project)
+	msg := fmt.Sprintf("promotion(%s): %s \n", env, project)
 	for _, change := range changes {
-		msg += fmt.Sprintf(`changed %s to %s\n`, change.Name, change.NewTag)
+		msg += fmt.Sprintf("changed %s to %s \n", change.Name, change.NewTag)
 	}
 	return msg
 }
