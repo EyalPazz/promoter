@@ -51,13 +51,18 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 
 	}
 
-	err = handleRepoActions(project, &changeLog, env, passphrase)
-	if err != nil {
-		fmt.Print(err)
-		return
-	}
+    if len(changeLog) == 0 {
+        fmt.Println("Nothing To Promote")
+        return
+    }
 
-	fmt.Println("Success!")
+    err = handleRepoActions(project, &changeLog, env, passphrase)
+    if err != nil {
+        fmt.Print(err)
+        return
+    }
+
+    fmt.Println("Success!")
 }
 
 func getServices(serviceStr string, project string, env string, projectFile string) ([]string, error) {
@@ -109,7 +114,7 @@ func processService(ctx context.Context, project string, service string, env str
 	if err != nil {
 		return err
 	}
-	tag := latestImage.ImageTags[0]
+	tag := latestImage.ImageTags[len(latestImage.ImageTags) - 1]
 
 	err, didChange := manipulations.ChangeServiceTag(project, service, env, tag, projectFile, viper.GetString("manifestRepoRoot"))
 	if err != nil {
