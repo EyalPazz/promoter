@@ -58,8 +58,7 @@ func (e *ECRRegistryClient) ImageExists(ctx context.Context, repositoryName stri
 		},
 	}
 
-    _, err := e.client.DescribeImages(ctx, input)
-	if err != nil {
+	if _, err := e.client.DescribeImages(ctx, input) ;err != nil {
 		return fmt.Errorf("error describing images: %w", err)
 	}
 

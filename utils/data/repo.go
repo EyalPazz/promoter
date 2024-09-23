@@ -41,9 +41,8 @@ func GetRepoPath() (string, error) {
 
 func RefreshRepo(hasPassphrase bool) {
 
-	if val, _ := ManifestRepoExists(); !val {
-		err := cloneRepository(hasPassphrase)
-		if err != nil {
+	if val  := ManifestRepoExists(); !val {
+        if err := cloneRepository(hasPassphrase); err != nil {
 			fmt.Println("Error Cloning Git Repo", err)
 			os.Exit(1)
 		}
@@ -98,26 +97,26 @@ func RefreshRepo(hasPassphrase bool) {
 	fmt.Println("Successfully Fetched Recent Updates From Manifest")
 }
 
-func ManifestRepoExists() (bool, error) {
+func ManifestRepoExists() bool {
 	manifestPath, err := GetRepoPath()
 	if err != nil {
 		fmt.Printf("Error getting repository path: %s\n", err)
-		return false, err
+		return false
 	}
 
 	info, err := os.Stat(manifestPath)
 	if os.IsNotExist(err) {
-		return false, nil
+		return false
 	}
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	if !info.IsDir() {
-		return false, errors.New("path exists but is not a directory")
+		return false
 	}
 
-	return true, nil
+	return true
 }
 
 func cloneRepository(hasPassphrase bool) error {

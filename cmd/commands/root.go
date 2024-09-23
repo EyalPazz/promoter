@@ -43,8 +43,7 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 
 	// TODO: Think about the trade-offs in making this async
 	for _, service := range serviceList {
-		err := processService(ctx, project, service, env, region, projectFile, &changeLog)
-		if err != nil {
+    if err :=  processService(ctx, project, service, env, region, projectFile, &changeLog); err != nil {
             errored = true
 			fmt.Println(err)
             if len(changeLog) == 0 { break; }
@@ -59,8 +58,7 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
         return
     }
 
-    err = handleRepoActions(project, &changeLog, env, passphrase)
-    if err != nil {
+    if err:= handleRepoActions(project, &changeLog, env, passphrase); err != nil {
         fmt.Print(err)
         return
     }
@@ -85,13 +83,11 @@ func getServices(serviceStr string, project string, env string, projectFile stri
 }
 
 func handleRepoActions(project string, changeLog *[]types.ServiceChanges, env string, passphrase bool) error {
-	err := manipulations.CommitRepoChange(project, changeLog, env)
-	if err != nil {
+    if err := manipulations.CommitRepoChange(project, changeLog, env); err != nil {
 		return err
 	}
 
-	err = manipulations.PushToManifest(passphrase)
-	if err != nil {
+    if err := manipulations.PushToManifest(passphrase); err != nil {
 		return err
 	}
 
@@ -106,7 +102,7 @@ func processService(ctx context.Context, project string, service string, env str
 
     registryFactory := &factories.RegistryFactory{}
 
-    // TODO: take type from config after implementing more registries
+    // TODO: take type from image names after implementing more registries
     ecrClient, err := registryFactory.InitializeRegistry(ctx , "ecr", region)
 	if err != nil {
 		return err
