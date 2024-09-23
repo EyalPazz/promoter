@@ -39,19 +39,22 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 	}
 
 	var changeLog []types.ServiceChanges
+    var errored bool = false;
 
 	// TODO: Think about the trade-offs in making this async
 	for _, service := range serviceList {
 		err := processService(ctx, project, service, env, region, projectFile, &changeLog)
 		if err != nil {
+            errored = true
 			fmt.Println(err)
+            if len(changeLog) == 0 { break; }
 			fmt.Println("Reverting Changes...")
 			manipulations.HandleDiscard()
 		}
 
 	}
 
-    if len(changeLog) == 0 {
+    if len(changeLog) == 0  && errored == false {
         fmt.Println("Nothing To Promote")
         return
     }
