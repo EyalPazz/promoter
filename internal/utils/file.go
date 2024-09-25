@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"errors"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
 )
@@ -38,38 +37,6 @@ func GetProjectConfig(project string, env string, projectFilePath string) (*Conf
 
 }
 
-func FindService(config *Config, service string) (map[string]interface{}, error) {
-	if _, ok := (*config)["applications"]; !ok {
-		return nil, errors.New("application field not found in values file")
-	}
-
-	services, ok := (*config)["applications"].([]interface{})
-	if !ok {
-		return nil, errors.New("applications field is not a list")
-	}
-
-	for _, app := range services {
-		appMap, ok := app.(map[string]interface{})
-		if !ok {
-			continue
-		}
-
-		name, ok := appMap["name"].(string)
-		if !ok {
-			continue
-		}
-
-		appType, ok := appMap["type"].(string)
-		if !ok {
-			continue
-		}
-
-		if name+"-"+appType == service {
-			return appMap, nil
-		}
-	}
-	return nil, fmt.Errorf("service with name '%s' not found", service)
-}
 
 func GetProjectFile(project string, env string, repoScoped bool) (string, error) {
 	repoPath, err := GetRepoPath()
