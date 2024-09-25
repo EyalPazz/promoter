@@ -54,7 +54,9 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 				break
 			}
 			fmt.Println("Reverting Changes...")
-			manipulations.HandleDiscard()
+            if err = manipulations.DiscardChanges(); err != nil {
+                fmt.Println(err)
+            }
 		}
 
 	}

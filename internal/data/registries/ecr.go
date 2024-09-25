@@ -1,4 +1,4 @@
-package data
+package registries
 
 import (
 	"context"

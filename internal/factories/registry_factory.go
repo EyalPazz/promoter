@@ -3,7 +3,7 @@ package factories
 import (
 	"context"
 	"fmt"
-	"promoter/internal/data"
+	"promoter/internal/data/registries"
 	"promoter/internal/types"
 )
 
@@ -12,7 +12,7 @@ type RegistryFactory struct{}
 func (f *RegistryFactory) InitializeRegistry(ctx context.Context, registryType string, region string) (types.ContainerRegistry, error) {
 	switch registryType {
 	case "ecr":
-		client, err := data.NewECRRegistryClient(ctx, region)
+		client, err := registries.NewECRRegistryClient(ctx, region)
 		if err != nil {
 			return nil, err
 		}
