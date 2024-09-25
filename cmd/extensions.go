@@ -13,6 +13,7 @@ var (
 func Extend(rootCmd *cobra.Command) {
 
 	rootCmd.AddCommand(RefreshManifestRepoCmd)
+	rootCmd.AddCommand(RevertServiceCmd)
 
 	GetServicesCmd.Flags().String("project", "", "Project name (required)")
 	GetServicesCmd.Flags().String("service", "", "Service name (required)")
@@ -26,6 +27,15 @@ var RefreshManifestRepoCmd = &cobra.Command{
 	Long:  "Refresh The Manifest Repo",
 	Run: func(cmd *cobra.Command, args []string) {
 		commands.RefreshManifestRepoCmd(cmd)
+	},
+}
+
+var RevertServiceCmd = &cobra.Command{
+	Use:   "revert",
+	Short: "Revert a service to a previous version",
+	Long:  "Refresh The Manifest Repo",
+	Run: func(cmd *cobra.Command, args []string) {
+		commands.RevertService(cmd)
 	},
 }
 

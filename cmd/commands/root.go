@@ -3,10 +3,10 @@ package commands
 import (
 	"context"
 	"fmt"
-	"promoter/internal/data"
-	"promoter/internal/factories"
+    "promoter/internal/factories/registry"
 	"promoter/internal/manipulations"
 	"promoter/internal/types"
+	"promoter/internal/utils"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -29,7 +29,7 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 		return
 	}
 
-	if err = data.RefreshRepo(passphrase); err != nil {
+	if err = utils.RefreshRepo(passphrase); err != nil {
 		fmt.Println(err)
 		return
 	}
@@ -79,7 +79,7 @@ func getServices(serviceStr string, project string, env string, projectFile stri
 	var err error
 
 	if serviceStr == "" {
-		serviceList, err = data.GetServicesNames(project, env, projectFile, viper.GetString("manifestRepoRoot"))
+		serviceList, err = utils.GetServicesNames(project, env, projectFile)
 		if err != nil {
 			return nil, fmt.Errorf("Error retrieving service names: %v", err)
 		}
@@ -103,7 +103,7 @@ func handleRepoActions(project string, changeLog *[]types.ServiceChanges, env st
 }
 
 func processService(ctx context.Context, project string, service string, env string, region string, projectFile string, changeLog *[]types.ServiceChanges) error {
-	repoName, err := data.GetImageRepository(project, service, env, projectFile)
+	repoName, err := utils.GetImageRepository(project, service, env, projectFile)
 	if err != nil {
 		return err
 	}
@@ -122,7 +122,7 @@ func processService(ctx context.Context, project string, service string, env str
 	}
 	tag := latestImage.ImageTags[len(latestImage.ImageTags)-1]
 
-	err, didChange := manipulations.ChangeServiceTag(project, service, env, tag, projectFile, viper.GetString("manifestRepoRoot"))
+	err, didChange := manipulations.ChangeServiceTag(project, service, env, tag, projectFile)
 	if err != nil {
 		return err
 	}

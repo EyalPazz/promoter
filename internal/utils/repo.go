@@ -1,11 +1,10 @@
-package data
+package utils
 
 import (
 	"errors"
 	"fmt"
 	"os"
 	"promoter/internal/auth"
-	"promoter/internal/utils"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
@@ -14,7 +13,7 @@ import (
 
 func GetImageRepository(project string, service string, env string, projectFilePath string) (string, error) {
 
-	image, err := GetServiceImage(service, project, env, projectFilePath, viper.GetString("manifestRepoRoot"))
+	image, err := GetServiceImage(service, project, env, projectFilePath)
 	if err != nil {
 		return "", fmt.Errorf("Unable to retrieve the input service's image : %s", err)
 	}
@@ -31,18 +30,18 @@ func RefreshRepo(hasPassphrase bool) error {
 
 	if val := ManifestRepoExists(); !val {
 		if err := cloneRepository(hasPassphrase); err != nil {
-			return fmt.Errorf("Error Cloning Git Repo", err)
+            return fmt.Errorf("Error Cloning Git Repo: %s", err)
 		}
 	}
 
 	auth, err := auth.GetSSHAuth(hasPassphrase)
 	if err != nil {
-		return fmt.Errorf("Error Authenticating With Git Remote:", err)
+		return fmt.Errorf("Error Authenticating With Git Remote: %s", err)
 	}
 
-	repo, err := utils.GetRepo()
+	repo, err := GetRepo()
 	if err != nil {
-		return fmt.Errorf("Error Getting manifest repo", err)
+        return fmt.Errorf("Error Getting manifest repo: %s", err)
 	}
 
 	err = repo.Fetch(&git.FetchOptions{
@@ -75,7 +74,7 @@ func RefreshRepo(hasPassphrase bool) error {
 }
 
 func ManifestRepoExists() bool {
-	manifestPath, err := utils.GetRepoPath()
+	manifestPath, err := GetRepoPath()
 	if err != nil {
 		fmt.Printf("Error getting repository path: %s\n", err)
 		return false
@@ -96,20 +95,6 @@ func ManifestRepoExists() bool {
 	return true
 }
 
-func GetLatestRevisions(project string, env string) ([]string, error) {
-
-	repo, err := utils.GetRepo()
-	if err != nil {
-		return nil, err
-	}
-
-	worktree, err := repo.Worktree()
-	if err != nil {
-		return nil, err
-	}
-
-	return nil, nil
-}
 
 func cloneRepository(hasPassphrase bool) error {
 	auth, err := auth.GetSSHAuth(hasPassphrase)
@@ -122,7 +107,7 @@ func cloneRepository(hasPassphrase bool) error {
 		return errors.New("No manifest repo URL given")
 	}
 
-	repoPath, err := utils.GetRepoPath()
+	repoPath, err := GetRepoPath()
 	if err != nil {
 		return err
 	}

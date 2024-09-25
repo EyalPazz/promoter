@@ -4,20 +4,19 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"promoter/internal/data"
 	"promoter/internal/utils"
 
 	"gopkg.in/yaml.v3"
 )
 
-func ChangeServiceTag(project string, service string, env string, tag string, projectFilePath string, manifestRepoRoot string) (error, bool) {
+func ChangeServiceTag(project string, service string, env string, tag string, projectFilePath string) (error, bool) {
 
-	config, projectFilePath, err := data.GetProjectConfig(project, env, projectFilePath, manifestRepoRoot)
+	config, projectFilePath, err := utils.GetProjectConfig(project, env, projectFilePath)
 	if err != nil {
 		return err, false
 	}
 
-	app, err := data.FindService(config, service)
+	app, err := utils.FindService(config, service)
 	if err != nil {
 		return err, false
 	}

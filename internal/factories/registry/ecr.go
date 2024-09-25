@@ -1,4 +1,4 @@
-package registries
+package factories
 
 import (
 	"context"

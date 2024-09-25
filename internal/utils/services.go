@@ -1,4 +1,4 @@
-package data
+package utils
 
 import (
 	"errors"
@@ -6,8 +6,8 @@ import (
 
 type Config map[interface{}]interface{}
 
-func GetServiceImage(service string, project string, env string, projectFilePath string, manifestRepoRoot string) (string, error) {
-	services, err := GetServices(project, env, projectFilePath, manifestRepoRoot)
+func GetServiceImage(service string, project string, env string, projectFilePath string) (string, error) {
+	services, err := GetServices(project, env, projectFilePath)
 
 	if err != nil {
 		return "", err
@@ -32,9 +32,9 @@ func GetServiceImage(service string, project string, env string, projectFilePath
 
 }
 
-func GetServices(project string, env string, projectFilePath string, manifestRepoRoot string) ([]interface{}, error) {
+func GetServices(project string, env string, projectFilePath string) ([]interface{}, error) {
 
-	config, _, err := GetProjectConfig(project, env, projectFilePath, manifestRepoRoot)
+	config, _, err := GetProjectConfig(project, env, projectFilePath)
 	if err != nil {
 		return nil, err
 	}
@@ -51,9 +51,9 @@ func GetServices(project string, env string, projectFilePath string, manifestRep
 	return services, nil
 }
 
-func GetServicesNames(project string, env string, projectFilePath string, manifestRepoRoot string) ([]string, error) {
+func GetServicesNames(project string, env string, projectFilePath string) ([]string, error) {
 
-	services, err := GetServices(project, env, projectFilePath, manifestRepoRoot)
+	services, err := GetServices(project, env, projectFilePath)
 
 	if err != nil {
 		return nil, err

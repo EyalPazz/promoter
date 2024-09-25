@@ -2,9 +2,9 @@ package commands
 
 import (
 	"fmt"
+	"promoter/internal/utils"
+
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"promoter/internal/data"
 )
 
 func GetServicesCmd(cmd *cobra.Command) {
@@ -17,7 +17,7 @@ func GetServicesCmd(cmd *cobra.Command) {
 		return
 	}
 
-	services, err := data.GetServicesNames(project, env, projectFile, viper.GetString("manifestRepoRoot"))
+	services, err := utils.GetServicesNames(project, env, projectFile)
 	if err != nil {
 		fmt.Print(err)
 		return

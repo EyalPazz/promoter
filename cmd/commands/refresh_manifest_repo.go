@@ -2,7 +2,7 @@ package commands
 
 import (
 	"fmt"
-	"promoter/internal/data"
+	"promoter/internal/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -14,7 +14,7 @@ func RefreshManifestRepoCmd(cmd *cobra.Command) {
 		return
 	}
 
-	if err = data.RefreshRepo(passphraseFlag); err != nil {
+	if err = utils.RefreshRepo(passphraseFlag); err != nil {
 		fmt.Print(err)
 	}
 }
