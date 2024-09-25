@@ -5,12 +5,10 @@ import (
 	"fmt"
 	"os"
 	"promoter/internal/data"
+	"promoter/internal/utils"
 
 	"gopkg.in/yaml.v3"
 )
-
-// TODO: Take From ENV | Config
-const imageTagKey = "imageTag"
 
 func ChangeServiceTag(project string, service string, env string, tag string, projectFilePath string, manifestRepoRoot string) (error, bool) {
 
@@ -23,6 +21,8 @@ func ChangeServiceTag(project string, service string, env string, tag string, pr
 	if err != nil {
 		return err, false
 	}
+
+    imageTagKey := utils.GetImageTagKey()
 
 	if app[imageTagKey] == tag {
 		fmt.Printf("Service %s is already at latest tag \n", service)

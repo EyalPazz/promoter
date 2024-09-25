@@ -16,7 +16,7 @@ import (
 func RootCmd(cmd *cobra.Command, region string, services string, project string, env string, projectFile string) {
 	passphrase, err := cmd.Flags().GetBool("passphrase")
 	if err != nil {
-		fmt.Print(err)
+		fmt.Println(err)
 		return
 	}
 
@@ -29,7 +29,11 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 		return
 	}
 
-	data.RefreshRepo(passphrase)
+	if err = data.RefreshRepo(passphrase); err != nil {
+		fmt.Println(err)
+		return
+    }
+
 	ctx := context.Background()
 
 	serviceList, err := getServices(services, project, env, projectFile)

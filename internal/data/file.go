@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"promoter/internal/utils"
 
 	"gopkg.in/yaml.v3"
 )
@@ -21,7 +22,7 @@ func GetProjectFile(repoPath string, project string, env string, manifestRepoRoo
 }
 
 func GetProjectConfig(project string, env string, projectFilePath string, manifestRepoRoot string) (*Config, string, error) {
-	repoPath, err := GetRepoPath()
+	repoPath, err := utils.GetRepoPath()
 	if err != nil {
 		return nil, "", fmt.Errorf("Error getting repository path: %s\n", err)
 	}

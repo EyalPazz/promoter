@@ -2,9 +2,9 @@ package manipulations
 
 import (
 	"fmt"
+	"promoter/internal/auth"
 	"promoter/internal/types"
-	gitAuth "promoter/internal/auth"
-	"promoter/internal/data"
+	"promoter/internal/utils"
 	"time"
 
 	"github.com/go-git/go-git/v5"
@@ -13,22 +13,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-func HandleDiscard() {
-	repoPath, err := data.GetRepoPath()
-	if err != nil {
-		fmt.Println(err)
-	}
+func DiscardChanges() error {
 
-	err = discardChanges(repoPath)
+    repo, err := utils.GetRepo()
 	if err != nil {
-		fmt.Println(err)
-	}
-}
-
-func discardChanges(repoPath string) error {
-	repo, err := git.PlainOpen(repoPath)
-	if err != nil {
-		return fmt.Errorf("failed to open repository: %v", err)
+		return err
 	}
 
 	worktree, err := repo.Worktree()
@@ -60,20 +49,10 @@ func discardChanges(repoPath string) error {
 	return nil
 }
 
-func composeCommitMsg(changes []types.ServiceChanges, env string, project string) string {
-	msg := fmt.Sprintf("promotion(%s): %s \n", env, project)
-	for _, change := range changes {
-		msg += fmt.Sprintf("changed %s to %s \n", change.Name, change.NewTag)
-	}
-	return msg
-}
 
 func CommitRepoChange(project string, changeLog *[]types.ServiceChanges, env string) error {
-	repoPath, err := data.GetRepoPath()
-	if err != nil {
-		return err
-	}
-	repo, err := git.PlainOpen(repoPath)
+
+    repo, err := utils.GetRepo()
 	if err != nil {
 		return err
 	}
@@ -83,8 +62,7 @@ func CommitRepoChange(project string, changeLog *[]types.ServiceChanges, env str
 		return err
 	}
 
-	_, err = worktree.Add(".")
-	if err != nil {
+    if _, err := worktree.Add("."); err != nil {
 		return err
 	}
 
@@ -98,7 +76,7 @@ func CommitRepoChange(project string, changeLog *[]types.ServiceChanges, env str
 		return fmt.Errorf("No git email was given in config")
 	}
 
-	_, commitErr := worktree.Commit(composeCommitMsg(*changeLog, env, project), &git.CommitOptions{
+	_, commitErr := worktree.Commit(utils.ComposeCommitMsg(*changeLog, env, project), &git.CommitOptions{
 		Author: &object.Signature{
 			Name:  gitName,
 			Email: gitEmail,
@@ -114,17 +92,13 @@ func CommitRepoChange(project string, changeLog *[]types.ServiceChanges, env str
 }
 
 func PushToManifest(hasPassphrase bool) error {
-	repoPath, err := data.GetRepoPath()
+
+    repo, err := utils.GetRepo()
 	if err != nil {
 		return err
 	}
 
-	repo, err := git.PlainOpen(repoPath)
-	if err != nil {
-		return err
-	}
-
-	auth, err := gitAuth.GetSSHAuth(hasPassphrase)
+	auth, err := auth.GetSSHAuth(hasPassphrase)
 	if err != nil {
 		fmt.Println("Error Authenticating With Git Remote:", err)
 		return err

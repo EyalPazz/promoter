@@ -4,18 +4,15 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	gitAuth "promoter/internal/auth"
+	"promoter/internal/auth"
+	"promoter/internal/utils"
 	"strings"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/viper"
 )
 
-const (
-	DefaultPromoterDir = "/promoter-data/repositories/"
-)
 
-// NOTICE: this determines the convention for image repository names
 func GetImageRepository(project string, service string, env string, projectFilePath string) (string, error) {
 
 	image, err := GetServiceImage(service, project, env, projectFilePath, viper.GetString("manifestRepoRoot"))
@@ -31,39 +28,23 @@ func GetImageRepository(project string, service string, env string, projectFileP
 	return imageParts[1], nil
 }
 
-func GetRepoPath() (string, error) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-	return homeDir + DefaultPromoterDir + "manifest", nil
-}
 
-func RefreshRepo(hasPassphrase bool) {
+func RefreshRepo(hasPassphrase bool) error {
 
 	if val  := ManifestRepoExists(); !val {
         if err := cloneRepository(hasPassphrase); err != nil {
-			fmt.Println("Error Cloning Git Repo", err)
-			os.Exit(1)
+			return fmt.Errorf("Error Cloning Git Repo", err)
 		}
 	}
 
-	auth, err := gitAuth.GetSSHAuth(hasPassphrase)
+	auth, err := auth.GetSSHAuth(hasPassphrase)
 	if err != nil {
-		fmt.Println("Error Authenticating With Git Remote:", err)
-		os.Exit(1)
+		return fmt.Errorf("Error Authenticating With Git Remote:", err)
 	}
 
-	repoPath, err := GetRepoPath()
+    repo, err := utils.GetRepo()
 	if err != nil {
-		fmt.Printf("Error getting repository path: %s\n", err)
-		os.Exit(1)
-	}
-
-	repo, err := git.PlainOpen(repoPath)
-	if err != nil {
-		fmt.Printf("Error opening repository: %s\n", err)
-		os.Exit(1)
+		return fmt.Errorf("Error Getting manifest repo", err)
 	}
 
 	err = repo.Fetch(&git.FetchOptions{
@@ -73,14 +54,12 @@ func RefreshRepo(hasPassphrase bool) {
 	})
 
 	if err != nil && err != git.NoErrAlreadyUpToDate {
-		fmt.Printf("Error fetching from remote: %s\n", err)
-		os.Exit(1)
+		return fmt.Errorf("Error fetching from remote: %s\n", err)
 	}
 
 	w, err := repo.Worktree()
 	if err != nil {
-		fmt.Printf("Error getting worktree: %s\n", err)
-		os.Exit(1)
+		return fmt.Errorf("Error getting worktree: %s\n", err)
 	}
 
 	err = w.Pull(&git.PullOptions{
@@ -90,15 +69,15 @@ func RefreshRepo(hasPassphrase bool) {
 	})
 
 	if err != nil && err != git.NoErrAlreadyUpToDate {
-		fmt.Printf("Error pulling from remote: %s\n", err)
-		os.Exit(1)
+		return fmt.Errorf("Error pulling from remote: %s\n", err)
 	}
 
 	fmt.Println("Successfully Fetched Recent Updates From Manifest")
+    return nil
 }
 
 func ManifestRepoExists() bool {
-	manifestPath, err := GetRepoPath()
+	manifestPath, err := utils.GetRepoPath()
 	if err != nil {
 		fmt.Printf("Error getting repository path: %s\n", err)
 		return false
@@ -119,8 +98,23 @@ func ManifestRepoExists() bool {
 	return true
 }
 
+func GetLatestRevisions(project string, env string) ([]string, error) {
+    
+    repo, err := utils.GetRepo()
+	if err != nil {
+		return nil, err
+	}
+
+	worktree, err := repo.Worktree()
+	if err != nil {
+		return nil, err
+	}
+
+    return nil, nil
+}
+
 func cloneRepository(hasPassphrase bool) error {
-	auth, err := gitAuth.GetSSHAuth(hasPassphrase)
+	auth, err := auth.GetSSHAuth(hasPassphrase)
 	if err != nil {
 		return err
 	}
@@ -130,7 +124,7 @@ func cloneRepository(hasPassphrase bool) error {
 		return errors.New("No manifest repo URL given")
 	}
 
-	repoPath, err := GetRepoPath()
+	repoPath, err := utils.GetRepoPath()
 	if err != nil {
 		return err
 	}
