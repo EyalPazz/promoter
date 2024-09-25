@@ -15,7 +15,7 @@ import (
 
 func DiscardChanges() error {
 
-    repo, err := utils.GetRepo()
+	repo, err := utils.GetRepo()
 	if err != nil {
 		return err
 	}
@@ -49,10 +49,9 @@ func DiscardChanges() error {
 	return nil
 }
 
-
 func CommitRepoChange(project string, changeLog *[]types.ServiceChanges, env string) error {
 
-    repo, err := utils.GetRepo()
+	repo, err := utils.GetRepo()
 	if err != nil {
 		return err
 	}
@@ -62,7 +61,7 @@ func CommitRepoChange(project string, changeLog *[]types.ServiceChanges, env str
 		return err
 	}
 
-    if _, err := worktree.Add("."); err != nil {
+	if _, err := worktree.Add("."); err != nil {
 		return err
 	}
 
@@ -93,7 +92,7 @@ func CommitRepoChange(project string, changeLog *[]types.ServiceChanges, env str
 
 func PushToManifest(hasPassphrase bool) error {
 
-    repo, err := utils.GetRepo()
+	repo, err := utils.GetRepo()
 	if err != nil {
 		return err
 	}

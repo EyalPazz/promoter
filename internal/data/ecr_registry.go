@@ -12,7 +12,7 @@ import (
 )
 
 type ECRRegistryClient struct {
-    client *ecr.Client
+	client *ecr.Client
 }
 
 func NewECRRegistryClient(ctx context.Context, region string) (*ECRRegistryClient, error) {
@@ -20,10 +20,10 @@ func NewECRRegistryClient(ctx context.Context, region string) (*ECRRegistryClien
 	if err != nil {
 		return nil, fmt.Errorf("error loading AWS configuration: %w", err)
 	}
-    return &ECRRegistryClient{client : ecr.NewFromConfig(cfg)}, nil
+	return &ECRRegistryClient{client: ecr.NewFromConfig(cfg)}, nil
 }
 
-func (e *ECRRegistryClient) GetLatestImage (ctx context.Context, repositoryName string) (*types.ImageDetail, error) {
+func (e *ECRRegistryClient) GetLatestImage(ctx context.Context, repositoryName string) (*types.ImageDetail, error) {
 	input := &ecr.DescribeImagesInput{
 		RepositoryName: aws.String(repositoryName),
 	}
@@ -58,7 +58,7 @@ func (e *ECRRegistryClient) ImageExists(ctx context.Context, repositoryName stri
 		},
 	}
 
-	if _, err := e.client.DescribeImages(ctx, input) ;err != nil {
+	if _, err := e.client.DescribeImages(ctx, input); err != nil {
 		return fmt.Errorf("error describing images: %w", err)
 	}
 

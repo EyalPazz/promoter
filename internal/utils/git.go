@@ -1,13 +1,12 @@
 package utils
 
 import (
+	"fmt"
 	"os"
-    "fmt"
 
 	"promoter/internal/types"
 
 	"github.com/go-git/go-git/v5"
-
 )
 
 const (
@@ -30,9 +29,9 @@ func GetRepo() (*git.Repository, error) {
 	repo, err := git.PlainOpen(repoPath)
 	if err != nil {
 		return nil, err
-    }
+	}
 
-    return repo, nil
+	return repo, nil
 }
 
 func ComposeCommitMsg(changes []types.ServiceChanges, env string, project string) string {

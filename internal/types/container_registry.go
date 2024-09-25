@@ -9,4 +9,3 @@ type ContainerRegistry interface {
 	GetLatestImage(ctx context.Context, repositoryName string) (*types.ImageDetail, error)
 	ImageExists(ctx context.Context, repositoryName string, imageTag string) error
 }
-

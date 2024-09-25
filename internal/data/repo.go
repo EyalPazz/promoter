@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-
 func GetImageRepository(project string, service string, env string, projectFilePath string) (string, error) {
 
 	image, err := GetServiceImage(service, project, env, projectFilePath, viper.GetString("manifestRepoRoot"))
@@ -28,11 +27,10 @@ func GetImageRepository(project string, service string, env string, projectFileP
 	return imageParts[1], nil
 }
 
-
 func RefreshRepo(hasPassphrase bool) error {
 
-	if val  := ManifestRepoExists(); !val {
-        if err := cloneRepository(hasPassphrase); err != nil {
+	if val := ManifestRepoExists(); !val {
+		if err := cloneRepository(hasPassphrase); err != nil {
 			return fmt.Errorf("Error Cloning Git Repo", err)
 		}
 	}
@@ -42,7 +40,7 @@ func RefreshRepo(hasPassphrase bool) error {
 		return fmt.Errorf("Error Authenticating With Git Remote:", err)
 	}
 
-    repo, err := utils.GetRepo()
+	repo, err := utils.GetRepo()
 	if err != nil {
 		return fmt.Errorf("Error Getting manifest repo", err)
 	}
@@ -73,7 +71,7 @@ func RefreshRepo(hasPassphrase bool) error {
 	}
 
 	fmt.Println("Successfully Fetched Recent Updates From Manifest")
-    return nil
+	return nil
 }
 
 func ManifestRepoExists() bool {
@@ -99,8 +97,8 @@ func ManifestRepoExists() bool {
 }
 
 func GetLatestRevisions(project string, env string) ([]string, error) {
-    
-    repo, err := utils.GetRepo()
+
+	repo, err := utils.GetRepo()
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +108,7 @@ func GetLatestRevisions(project string, env string) ([]string, error) {
 		return nil, err
 	}
 
-    return nil, nil
+	return nil, nil
 }
 
 func cloneRepository(hasPassphrase bool) error {

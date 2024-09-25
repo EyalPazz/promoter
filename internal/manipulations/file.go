@@ -22,7 +22,7 @@ func ChangeServiceTag(project string, service string, env string, tag string, pr
 		return err, false
 	}
 
-    imageTagKey := utils.GetImageTagKey()
+	imageTagKey := utils.GetImageTagKey()
 
 	if app[imageTagKey] == tag {
 		fmt.Printf("Service %s is already at latest tag \n", service)

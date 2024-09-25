@@ -3,10 +3,10 @@ package commands
 import (
 	"context"
 	"fmt"
-	"promoter/internal/types"
 	"promoter/internal/data"
 	"promoter/internal/factories"
 	"promoter/internal/manipulations"
+	"promoter/internal/types"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -32,7 +32,7 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 	if err = data.RefreshRepo(passphrase); err != nil {
 		fmt.Println(err)
 		return
-    }
+	}
 
 	ctx := context.Background()
 
@@ -43,31 +43,33 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 	}
 
 	var changeLog []types.ServiceChanges
-    var errored bool = false;
+	var errored bool = false
 
 	// TODO: Think about the trade-offs in making this async
 	for _, service := range serviceList {
-    if err :=  processService(ctx, project, service, env, region, projectFile, &changeLog); err != nil {
-            errored = true
+		if err := processService(ctx, project, service, env, region, projectFile, &changeLog); err != nil {
+			errored = true
 			fmt.Println(err)
-            if len(changeLog) == 0 { break; }
+			if len(changeLog) == 0 {
+				break
+			}
 			fmt.Println("Reverting Changes...")
 			manipulations.HandleDiscard()
 		}
 
 	}
 
-    if len(changeLog) == 0  && errored == false {
-        fmt.Println("Nothing To Promote")
-        return
-    }
+	if len(changeLog) == 0 && errored == false {
+		fmt.Println("Nothing To Promote")
+		return
+	}
 
-    if err:= handleRepoActions(project, &changeLog, env, passphrase); err != nil {
-        fmt.Print(err)
-        return
-    }
+	if err := handleRepoActions(project, &changeLog, env, passphrase); err != nil {
+		fmt.Print(err)
+		return
+	}
 
-    fmt.Println("Success!")
+	fmt.Println("Success!")
 }
 
 func getServices(serviceStr string, project string, env string, projectFile string) ([]string, error) {
@@ -87,11 +89,11 @@ func getServices(serviceStr string, project string, env string, projectFile stri
 }
 
 func handleRepoActions(project string, changeLog *[]types.ServiceChanges, env string, passphrase bool) error {
-    if err := manipulations.CommitRepoChange(project, changeLog, env); err != nil {
+	if err := manipulations.CommitRepoChange(project, changeLog, env); err != nil {
 		return err
 	}
 
-    if err := manipulations.PushToManifest(passphrase); err != nil {
+	if err := manipulations.PushToManifest(passphrase); err != nil {
 		return err
 	}
 
@@ -104,20 +106,19 @@ func processService(ctx context.Context, project string, service string, env str
 		return err
 	}
 
-    registryFactory := &factories.RegistryFactory{}
+	registryFactory := &factories.RegistryFactory{}
 
-    // TODO: take type from image names after implementing more registries
-    ecrClient, err := registryFactory.InitializeRegistry(ctx , "ecr", region)
+	// TODO: take type from image names after implementing more registries
+	ecrClient, err := registryFactory.InitializeRegistry(ctx, "ecr", region)
 	if err != nil {
 		return err
 	}
-
 
 	latestImage, err := ecrClient.GetLatestImage(ctx, repoName)
 	if err != nil {
 		return err
 	}
-	tag := latestImage.ImageTags[len(latestImage.ImageTags) - 1]
+	tag := latestImage.ImageTags[len(latestImage.ImageTags)-1]
 
 	err, didChange := manipulations.ChangeServiceTag(project, service, env, tag, projectFile, viper.GetString("manifestRepoRoot"))
 	if err != nil {
