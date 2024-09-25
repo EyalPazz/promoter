@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"promoter/utils/data"
+	"promoter/internal/data"
 
 	"gopkg.in/yaml.v3"
 )

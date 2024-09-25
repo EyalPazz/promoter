@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	gitAuth "promoter/utils/auth"
+	gitAuth "promoter/internal/auth"
 	"strings"
 
 	"github.com/go-git/go-git/v5"

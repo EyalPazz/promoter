@@ -3,10 +3,10 @@ package commands
 import (
 	"context"
 	"fmt"
-	"promoter/types"
-	"promoter/utils/data"
-	"promoter/utils/factories"
-	"promoter/utils/manipulations"
+	"promoter/internal/types"
+	"promoter/internal/data"
+	"promoter/internal/factories"
+	"promoter/internal/manipulations"
 	"strings"
 
 	"github.com/spf13/cobra"

@@ -2,7 +2,7 @@ package commands
 
 import (
 	"fmt"
-	"promoter/utils/data"
+	"promoter/internal/data"
 
 	"github.com/spf13/cobra"
 )

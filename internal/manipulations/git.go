@@ -2,9 +2,9 @@ package manipulations
 
 import (
 	"fmt"
-	"promoter/types"
-	gitAuth "promoter/utils/auth"
-	"promoter/utils/data"
+	"promoter/internal/types"
+	gitAuth "promoter/internal/auth"
+	"promoter/internal/data"
 	"time"
 
 	"github.com/go-git/go-git/v5"

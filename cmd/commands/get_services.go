@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"promoter/utils/data"
+	"promoter/internal/data"
 )
 
 func GetServicesCmd(cmd *cobra.Command) {

@@ -3,8 +3,8 @@ package factories
 import (
     "fmt"
     "context"
-    "promoter/utils/data"
-    "promoter/types"
+    "promoter/internal/data"
+    "promoter/internal/types"
 )
 
 type RegistryFactory struct{}
