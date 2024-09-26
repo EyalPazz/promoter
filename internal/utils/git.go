@@ -2,11 +2,13 @@ package utils
 
 import (
 	"fmt"
+	"io"
 	"os"
-
 	"time"
 
 	"promoter/internal/types"
+
+	"gopkg.in/yaml.v3"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -45,35 +47,66 @@ func ComposeCommitMsg(changes []types.ServiceChanges, env string, project string
 	return msg
 }
 
-func GetLatestRevisions(project string, env string, dayInterval int) ([]string, error) {
+func GetLatestRevisions(project string, env string, dayInterval int) ([]*object.Commit, error) {
 	repo, err := GetRepo()
 	if err != nil {
 		return nil, err
 	}
 
-    projectFile, err := GetProjectFile(project, env, true)
+	projectFile, err := GetProjectFile(project, env, true)
 	if err != nil {
 		return nil, err
 	}
 
-    sinceTime := time.Now().AddDate(0,0, dayInterval)
-    logs, err := repo.Log(&git.LogOptions{
-            PathFilter: func(s string) bool {
-            return s == projectFile
-        },
-            Since: &sinceTime ,
-    })
+	sinceTime := time.Now().AddDate(0, 0, -dayInterval)
+	logs, err := repo.Log(&git.LogOptions{
+		PathFilter: func(s string) bool {
+			return s == projectFile
+		},
+		Since: &sinceTime,
+	})
 
 	if err != nil {
 		return nil, err
 	}
 
-    var res []string;
+	var res []*object.Commit
 
-    err = logs.ForEach(func(c *object.Commit) error {
-        res = append(res, c.Hash.String())
-        return nil
-    })
+	err = logs.ForEach(func(c *object.Commit) error {
+		res = append(res, c)
+		return nil
+	})
 
 	return res, nil
+}
+
+func GetFileFromCommit(commit *object.Commit, filePath string) (*Config, error) {
+	tree, err := commit.Tree()
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := tree.File(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	reader, err := file.Blob.Reader()
+	if err != nil {
+		return nil, err
+	}
+
+	fileData, err := io.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	var config Config
+
+	if err := yaml.Unmarshal(fileData, &config); err != nil {
+		return nil, err
+	}
+
+	return &config, nil
+
 }

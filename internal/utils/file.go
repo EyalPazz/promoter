@@ -9,13 +9,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-
 func GetProjectConfig(project string, env string, projectFilePath string) (*Config, string, error) {
 
-    var err error;
+	var err error
 
 	if projectFilePath == "" {
-        projectFilePath, err = GetProjectFile( project, env, false)
+		projectFilePath, err = GetProjectFile(project, env, false)
 		if err != nil {
 			return nil, "", err
 		}
@@ -27,8 +26,8 @@ func GetProjectConfig(project string, env string, projectFilePath string) (*Conf
 	}
 
 	var config Config
-	err = yaml.Unmarshal(yamlFile, &config)
-	if err != nil {
+
+	if err := yaml.Unmarshal(yamlFile, &config); err != nil {
 		return nil, "", fmt.Errorf("Error unmarshalling YAML: %v", err)
 
 	}
@@ -36,7 +35,6 @@ func GetProjectConfig(project string, env string, projectFilePath string) (*Conf
 	return &config, projectFilePath, nil
 
 }
-
 
 func GetProjectFile(project string, env string, repoScoped bool) (string, error) {
 	repoPath, err := GetRepoPath()
@@ -49,9 +47,9 @@ func GetProjectFile(project string, env string, repoScoped bool) (string, error)
 	for _, ext := range fileExtensions {
 		projectFile := filepath.Join(repoPath, viper.GetString("manifestRepoRoot"), project, env, "values"+ext)
 		if FileExists(projectFile) {
-            if repoScoped {
-                return filepath.Join(viper.GetString("manifestRepoRoot"), project, env, "values"+ext), nil
-            }
+			if repoScoped {
+				return filepath.Join(viper.GetString("manifestRepoRoot"), project, env, "values"+ext), nil
+			}
 			return projectFile, nil
 		}
 	}

@@ -13,12 +13,18 @@ var (
 func Extend(rootCmd *cobra.Command) {
 
 	rootCmd.AddCommand(RefreshManifestRepoCmd)
-	rootCmd.AddCommand(RevertServiceCmd)
 
 	GetServicesCmd.Flags().String("project", "", "Project name (required)")
 	GetServicesCmd.Flags().String("service", "", "Service name (required)")
 	GetServicesCmd.Flags().String("env", "", "Environment name (required)")
 	rootCmd.AddCommand(GetServicesCmd)
+
+
+	rootCmd.AddCommand(RevertServiceCmd)
+	RevertServiceCmd.Flags().String("project", "", "Project name (required)")
+	RevertServiceCmd.Flags().String("service", "", "Service name (required)")
+	RevertServiceCmd.Flags().String("env", "", "Environment name (required)")
+    
 }
 
 var RefreshManifestRepoCmd = &cobra.Command{

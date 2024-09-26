@@ -3,7 +3,7 @@ package commands
 import (
 	"context"
 	"fmt"
-    "promoter/internal/factories/registry"
+	"promoter/internal/factories/registry"
 	"promoter/internal/manipulations"
 	"promoter/internal/types"
 	"promoter/internal/utils"
@@ -54,9 +54,9 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 				break
 			}
 			fmt.Println("Reverting Changes...")
-            if err = manipulations.DiscardChanges(); err != nil {
-                fmt.Println(err)
-            }
+			if err = manipulations.DiscardChanges(); err != nil {
+				fmt.Println(err)
+			}
 		}
 
 	}

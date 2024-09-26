@@ -1,8 +1,8 @@
 package utils
 
 import (
-    "fmt"
 	"errors"
+	"fmt"
 )
 
 type Config map[interface{}]interface{}

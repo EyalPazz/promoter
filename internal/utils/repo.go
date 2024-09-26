@@ -30,7 +30,7 @@ func RefreshRepo(hasPassphrase bool) error {
 
 	if val := ManifestRepoExists(); !val {
 		if err := cloneRepository(hasPassphrase); err != nil {
-            return fmt.Errorf("Error Cloning Git Repo: %s", err)
+			return fmt.Errorf("Error Cloning Git Repo: %s", err)
 		}
 	}
 
@@ -41,7 +41,7 @@ func RefreshRepo(hasPassphrase bool) error {
 
 	repo, err := GetRepo()
 	if err != nil {
-        return fmt.Errorf("Error Getting manifest repo: %s", err)
+		return fmt.Errorf("Error Getting manifest repo: %s", err)
 	}
 
 	err = repo.Fetch(&git.FetchOptions{
@@ -94,7 +94,6 @@ func ManifestRepoExists() bool {
 
 	return true
 }
-
 
 func cloneRepository(hasPassphrase bool) error {
 	auth, err := auth.GetSSHAuth(hasPassphrase)
