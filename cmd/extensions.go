@@ -19,12 +19,12 @@ func Extend(rootCmd *cobra.Command) {
 	GetServicesCmd.Flags().String("env", "", "Environment name (required)")
 	rootCmd.AddCommand(GetServicesCmd)
 
-
 	rootCmd.AddCommand(RevertServiceCmd)
 	RevertServiceCmd.Flags().String("project", "", "Project name (required)")
 	RevertServiceCmd.Flags().String("service", "", "Service name (required)")
 	RevertServiceCmd.Flags().String("env", "", "Environment name (required)")
-    
+	RevertServiceCmd.Flags().Int("since", 7, "Time interval to get revisions from (defaults to 7)")
+
 }
 
 var RefreshManifestRepoCmd = &cobra.Command{

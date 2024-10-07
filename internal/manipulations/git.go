@@ -3,7 +3,6 @@ package manipulations
 import (
 	"fmt"
 	"promoter/internal/auth"
-	"promoter/internal/types"
 	"promoter/internal/utils"
 	"time"
 
@@ -49,7 +48,7 @@ func DiscardChanges() error {
 	return nil
 }
 
-func CommitRepoChange(project string, changeLog *[]types.ServiceChanges, env string) error {
+func CommitRepoChange(commitMsg string) error {
 
 	repo, err := utils.GetRepo()
 	if err != nil {
@@ -75,7 +74,7 @@ func CommitRepoChange(project string, changeLog *[]types.ServiceChanges, env str
 		return fmt.Errorf("No git email was given in config")
 	}
 
-	_, commitErr := worktree.Commit(utils.ComposeCommitMsg(*changeLog, env, project), &git.CommitOptions{
+	_, commitErr := worktree.Commit(commitMsg, &git.CommitOptions{
 		Author: &object.Signature{
 			Name:  gitName,
 			Email: gitEmail,
@@ -107,5 +106,17 @@ func PushToManifest(hasPassphrase bool) error {
 		RemoteName: "origin",
 		Auth:       auth,
 	})
+	return nil
+}
+
+func HandleRepoActions(commitMsg string, passphrase bool) error {
+	if err := CommitRepoChange(commitMsg); err != nil {
+		return err
+	}
+
+	if err := PushToManifest(passphrase); err != nil {
+		return err
+	}
+
 	return nil
 }

@@ -15,10 +15,6 @@ import (
 
 func RootCmd(cmd *cobra.Command, region string, services string, project string, env string, projectFile string) {
 	passphrase, err := cmd.Flags().GetBool("passphrase")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 
 	if region == "" {
 		region = viper.GetString("region")
@@ -66,7 +62,9 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 		return
 	}
 
-	if err := handleRepoActions(project, &changeLog, env, passphrase); err != nil {
+	commitMsg := utils.ComposeCommitMsg(&changeLog, env, project)
+
+	if err := manipulations.HandleRepoActions(commitMsg, passphrase); err != nil {
 		fmt.Print(err)
 		return
 	}
@@ -90,18 +88,6 @@ func getServices(serviceStr string, project string, env string, projectFile stri
 	return serviceList, nil
 }
 
-func handleRepoActions(project string, changeLog *[]types.ServiceChanges, env string, passphrase bool) error {
-	if err := manipulations.CommitRepoChange(project, changeLog, env); err != nil {
-		return err
-	}
-
-	if err := manipulations.PushToManifest(passphrase); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func processService(ctx context.Context, project string, service string, env string, region string, projectFile string, changeLog *[]types.ServiceChanges) error {
 	repoName, err := utils.GetImageRepository(project, service, env, projectFile)
 	if err != nil {
@@ -122,10 +108,11 @@ func processService(ctx context.Context, project string, service string, env str
 	}
 	tag := latestImage.ImageTags[len(latestImage.ImageTags)-1]
 
-	err, didChange := manipulations.ChangeServiceTag(project, service, env, tag, projectFile)
+	didChange, err := manipulations.ChangeServiceTag(project, service, env, tag, projectFile)
 	if err != nil {
 		return err
 	}
+
 	if didChange {
 		*changeLog = append(*changeLog, types.ServiceChanges{
 			Name:   service,

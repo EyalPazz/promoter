@@ -39,9 +39,9 @@ func GetRepo() (*git.Repository, error) {
 	return repo, nil
 }
 
-func ComposeCommitMsg(changes []types.ServiceChanges, env string, project string) string {
+func ComposeCommitMsg(changes *[]types.ServiceChanges, env string, project string) string {
 	msg := fmt.Sprintf("promotion(%s): %s \n", env, project)
-	for _, change := range changes {
+	for _, change := range *changes {
 		msg += fmt.Sprintf("changed %s to %s \n", change.Name, change.NewTag)
 	}
 	return msg
@@ -63,6 +63,7 @@ func GetLatestRevisions(project string, env string, dayInterval int) ([]*object.
 		PathFilter: func(s string) bool {
 			return s == projectFile
 		},
+		Order: git.LogOrderCommitterTime,
 		Since: &sinceTime,
 	})
 

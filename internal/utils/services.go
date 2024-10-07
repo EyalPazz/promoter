@@ -35,7 +35,7 @@ func GetServiceImage(service string, project string, env string, projectFilePath
 
 func GetServices(project string, env string, projectFilePath string) ([]interface{}, error) {
 
-	config, _, err := GetProjectConfig(project, env, projectFilePath)
+	config, err := GetProjectConfig(project, env, projectFilePath)
 	if err != nil {
 		return nil, err
 	}

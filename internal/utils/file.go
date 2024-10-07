@@ -9,30 +9,30 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func GetProjectConfig(project string, env string, projectFilePath string) (*Config, string, error) {
+func GetProjectConfig(project string, env string, projectFilePath string) (*Config, error) {
 
 	var err error
 
 	if projectFilePath == "" {
 		projectFilePath, err = GetProjectFile(project, env, false)
 		if err != nil {
-			return nil, "", err
+			return nil, err
 		}
 	}
 
 	yamlFile, err := os.ReadFile(projectFilePath)
 	if err != nil {
-		return nil, "", err
+		return nil, err
 	}
 
 	var config Config
 
 	if err := yaml.Unmarshal(yamlFile, &config); err != nil {
-		return nil, "", fmt.Errorf("Error unmarshalling YAML: %v", err)
+		return nil, fmt.Errorf("Error unmarshalling YAML: %v", err)
 
 	}
 
-	return &config, projectFilePath, nil
+	return &config, nil
 
 }
 
@@ -53,7 +53,30 @@ func GetProjectFile(project string, env string, repoScoped bool) (string, error)
 			return projectFile, nil
 		}
 	}
+
 	return "", fmt.Errorf("Project File Does Not exist")
+}
+
+func WriteToProjectFile(project, env, projectFilePath string, config *Config) error {
+	var err error
+
+	if projectFilePath == "" {
+		projectFilePath, err = GetProjectFile(project, env, false)
+		if err != nil {
+			return err
+		}
+	}
+
+	updatedYAML, err := yaml.Marshal(config)
+	if err != nil {
+		return err
+	}
+
+	if err = os.WriteFile(projectFilePath, updatedYAML, 0644); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func FileExists(filename string) bool {
