@@ -69,7 +69,7 @@ func RefreshRepo(hasPassphrase bool) error {
 		return fmt.Errorf("Error pulling from remote: %s\n", err)
 	}
 
-	fmt.Println("Successfully Fetched Recent Updates From Manifest")
+	fmt.Print("Successfully Fetched Recent Updates From Manifest \n\n")
 	return nil
 }
 
