@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func GetProjectConfig(project string, env string, projectFilePath string) (*Config, error) {
+func GetProjectConfig(project, env, projectFilePath string) (*Config, error) {
 
 	var err error
 

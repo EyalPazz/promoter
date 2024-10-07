@@ -47,7 +47,7 @@ func (e *ECRRegistryClient) GetLatestImage(ctx context.Context, repositoryName s
 	return &latestImage, nil
 }
 
-func (e *ECRRegistryClient) ImageExists(ctx context.Context, repositoryName string, imageTag string) error {
+func (e *ECRRegistryClient) ImageExists(ctx context.Context, repositoryName, imageTag string) error {
 
 	input := &ecr.DescribeImagesInput{
 		RepositoryName: aws.String(repositoryName),

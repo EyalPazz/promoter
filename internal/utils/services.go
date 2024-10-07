@@ -7,7 +7,7 @@ import (
 
 type Config map[interface{}]interface{}
 
-func GetServiceImage(service string, project string, env string, projectFilePath string) (string, error) {
+func GetServiceImage(service, project, env, projectFilePath string) (string, error) {
 	services, err := GetServices(project, env, projectFilePath)
 
 	if err != nil {
@@ -33,7 +33,7 @@ func GetServiceImage(service string, project string, env string, projectFilePath
 
 }
 
-func GetServices(project string, env string, projectFilePath string) ([]interface{}, error) {
+func GetServices(project, env, projectFilePath string) ([]interface{}, error) {
 
 	config, err := GetProjectConfig(project, env, projectFilePath)
 	if err != nil {
@@ -52,7 +52,7 @@ func GetServices(project string, env string, projectFilePath string) ([]interfac
 	return services, nil
 }
 
-func GetServicesNames(project string, env string, projectFilePath string) ([]string, error) {
+func GetServicesNames(project, env, projectFilePath string) ([]string, error) {
 
 	services, err := GetServices(project, env, projectFilePath)
 

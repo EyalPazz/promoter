@@ -6,7 +6,7 @@ import (
 	"promoter/internal/utils"
 )
 
-func ChangeServiceTag(project string, service string, env string, tag string, projectFilePath string) (bool, error) {
+func ChangeServiceTag(project, service, env, tag, projectFilePath string) (bool, error) {
 
 	config, err := utils.GetProjectConfig(project, env, projectFilePath)
 	if err != nil {

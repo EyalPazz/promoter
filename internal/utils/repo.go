@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func GetImageRepository(project string, service string, env string, projectFilePath string) (string, error) {
+func GetImageRepository(project, service, env, projectFilePath string) (string, error) {
 
 	image, err := GetServiceImage(service, project, env, projectFilePath)
 	if err != nil {

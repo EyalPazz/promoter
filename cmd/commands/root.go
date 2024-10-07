@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func RootCmd(cmd *cobra.Command, region string, services string, project string, env string, projectFile string) {
+func RootCmd(cmd *cobra.Command, region, services, project, env, projectFile string) {
 	passphrase, err := cmd.Flags().GetBool("passphrase")
 
 	if region == "" {
@@ -70,7 +70,7 @@ func RootCmd(cmd *cobra.Command, region string, services string, project string,
 	fmt.Println("Success!")
 }
 
-func getServices(serviceStr string, project string, env string, projectFile string) ([]string, error) {
+func getServices(serviceStr, project, env, projectFile string) ([]string, error) {
 	var serviceList []string
 	var err error
 
@@ -86,7 +86,7 @@ func getServices(serviceStr string, project string, env string, projectFile stri
 	return serviceList, nil
 }
 
-func processService(ctx context.Context, project string, service string, env string, region string, projectFile string, changeLog *[]types.ServiceChanges) error {
+func processService(ctx context.Context, project, service, env, region, projectFile string, changeLog *[]types.ServiceChanges) error {
 	repoName, err := utils.GetImageRepository(project, service, env, projectFile)
 	if err != nil {
 		return err
