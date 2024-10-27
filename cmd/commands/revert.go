@@ -11,7 +11,7 @@ import (
 	"golang.org/x/exp/maps"
 )
 
-func RevertService(cmd *cobra.Command) {
+func RevertProject(cmd *cobra.Command) {
 	env, _ := cmd.Flags().GetString("env")
 	passphrase, _ := cmd.Flags().GetBool("passphrase")
 	project, _ := cmd.Flags().GetString("project")
