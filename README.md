@@ -29,9 +29,10 @@ Create a configuration file named .promoter.yaml in your home directory (~/.prom
 ```yaml
 git-email: <Your Git Email>
 git-name: <Your Git Name>
-manifest-repo-url: <Config Files Repo URL>
+manifest-repo: <Config Files Repo URL>
 ssh-key-path: <Git SSH Key Path>
 region: <Region of Your Container Registry>
+manifest-repo-root: < ** OPTIONAL ** For app of apps repos>
 ```
 
 Your manifest project structure should follow this format:

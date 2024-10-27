@@ -48,7 +48,7 @@ func GetProjectFile(project string, env string, repoScoped bool) (string, error)
 		projectFile := filepath.Join(repoPath, viper.GetString("manifestRepoRoot"), project, env, "values"+ext)
 		if FileExists(projectFile) {
 			if repoScoped {
-				return filepath.Join(viper.GetString("manifestRepoRoot"), project, env, "values"+ext), nil
+				return filepath.Join(viper.GetString("manifest-repo-root"), project, env, "values"+ext), nil
 			}
 			return projectFile, nil
 		}
