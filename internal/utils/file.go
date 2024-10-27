@@ -45,7 +45,7 @@ func GetProjectFile(project string, env string, repoScoped bool) (string, error)
 	fileExtensions := []string{".yaml", ".yml"}
 
 	for _, ext := range fileExtensions {
-		projectFile := filepath.Join(repoPath, viper.GetString("manifestRepoRoot"), project, env, "values"+ext)
+		projectFile := filepath.Join(repoPath, viper.GetString("manifest-repo-root"), project, env, "values"+ext)
 		if FileExists(projectFile) {
 			if repoScoped {
 				return filepath.Join(viper.GetString("manifest-repo-root"), project, env, "values"+ext), nil
