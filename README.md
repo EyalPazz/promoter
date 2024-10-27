@@ -24,6 +24,12 @@ To promote a service to the production environment with the latest image tag, us
 promoter --project <project_name> --service <service_name> --env production
 ```
 
+To promote a service to the production environment with a specific image tag, use:
+
+```bash
+promoter --project <project_name> --service <service_name> --env production
+```
+
 To promote all services of a project to the production environment with the latest image tag, use:
 
 ```bash
@@ -67,6 +73,6 @@ argo/
 ## To-Do List
 
 - [x] 1: Make Deployment Platform agnostic
+- [*] 4: Write documentation
 - [ ] 2: Add Tests
 - [ ] 3: Expend to more providers and manifest repo structures
-- [ ] 4: Write documentation
