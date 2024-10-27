@@ -8,7 +8,15 @@ Promoter facilitates easy promotion between environments using GitOps and Helm. 
 curl -sL https://github.com/EyalPazz/promoter/raw/main/install.sh | bash
 ```
 
+or
+
+```bash
+make install
+```
+
 ## Usage
+
+### Promotion
 
 To promote a service to the production environment with the latest image tag, use:
 
@@ -20,6 +28,14 @@ To promote all services of a project to the production environment with the late
 
 ```bash
 promoter --project <project_name> --env production
+```
+
+### Reverting
+
+To revert all services of a project to a certain revision
+
+```bash
+promoter revert --project <project_name> --env production
 ```
 
 ## Configuration
