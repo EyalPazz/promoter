@@ -16,6 +16,7 @@ var (
 	project     string
 	services    string
 	env         string
+	tag         string
 	projectFile string
 
 	rootCmd = &cobra.Command{
@@ -23,7 +24,7 @@ var (
 		Short: "promoter is a CLI tool to easily deploy services",
 		Long:  `promoter is a CLI tool to easily deploy services across different environments`,
 		Run: func(cmd *cobra.Command, args []string) {
-			commands.RootCmd(cmd, region, services, project, env, projectFile)
+			commands.RootCmd(cmd, region, services, tag, project, env, projectFile)
 		},
 	}
 )
@@ -41,6 +42,7 @@ func init() {
 	rootCmd.Flags().StringVar(&project, "project", "", "Project name (required)")
 	rootCmd.Flags().StringVar(&services, "services", "", "Services  (separeted by a comma)")
 	rootCmd.Flags().StringVar(&env, "env", "", "Environment name (required)")
+	rootCmd.Flags().StringVar(&tag, "tag", "", "Specific image tag to promote (or revert) to (Only Supported With One Service)")
 	rootCmd.PersistentFlags().StringVar(&projectFile, "project-file", "", "Project File")
 	rootCmd.PersistentFlags().Bool("passphrase", false, "Whether or not to prompt for ssh key passphrase")
 

@@ -13,7 +13,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func RootCmd(cmd *cobra.Command, region, services, project, env, projectFile string) {
+func RootCmd(cmd *cobra.Command, region, services, tag, project, env, projectFile string) {
 	passphrase, err := cmd.Flags().GetBool("passphrase")
 
 	if region == "" {
@@ -25,6 +25,17 @@ func RootCmd(cmd *cobra.Command, region, services, project, env, projectFile str
 		return
 	}
 
+	serviceList, err := getServices(services, project, env, projectFile)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if tag != "" && len(serviceList) > 1 {
+		fmt.Println("Error: Image Tag Flag Only Supported With One Service")
+		return
+	}
+
 	if err = utils.RefreshRepo(passphrase); err != nil {
 		fmt.Println(err)
 		return
@@ -32,17 +43,11 @@ func RootCmd(cmd *cobra.Command, region, services, project, env, projectFile str
 
 	ctx := context.Background()
 
-	serviceList, err := getServices(services, project, env, projectFile)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
 	var changeLog []types.ServiceChanges
 
 	// TODO: Think about the trade-offs in making this async
 	for _, service := range serviceList {
-		if err := processService(ctx, project, service, env, region, projectFile, &changeLog); err != nil {
+		if err := processService(ctx, project, service, env, tag, region, projectFile, &changeLog); err != nil {
 			fmt.Println(err)
 			if len(changeLog) > 0 {
 				fmt.Println("Reverting Changes...")
@@ -86,27 +91,36 @@ func getServices(serviceStr, project, env, projectFile string) ([]string, error)
 	return serviceList, nil
 }
 
-func processService(ctx context.Context, project, service, env, region, projectFile string, changeLog *[]types.ServiceChanges) error {
+func processService(ctx context.Context, project, service, env, tag, region, projectFile string, changeLog *[]types.ServiceChanges) error {
 	repoName, err := utils.GetImageRepository(project, service, env, projectFile)
 	if err != nil {
 		return err
 	}
 
 	registryFactory := &factories.RegistryFactory{}
+	newTag := ""
 
-	// TODO: take type from image names after implementing more registries
 	ecrClient, err := registryFactory.InitializeRegistry(ctx, "ecr", region)
 	if err != nil {
 		return err
 	}
 
-	latestImage, err := ecrClient.GetLatestImage(ctx, repoName)
-	if err != nil {
-		return err
-	}
-	tag := latestImage.ImageTags[len(latestImage.ImageTags)-1]
+	if tag != "" {
+		if err := ecrClient.ImageExists(ctx, repoName, tag); err != nil {
+			return err
+		}
+		newTag = tag
+	} else {
+		// TODO: take type from image names after implementing more registries
 
-	didChange, err := manipulations.ChangeServiceTag(project, service, env, tag, projectFile)
+		latestImage, err := ecrClient.GetLatestImage(ctx, repoName)
+		if err != nil {
+			return err
+		}
+		newTag = latestImage.ImageTags[len(latestImage.ImageTags)-1]
+	}
+
+	didChange, err := manipulations.ChangeServiceTag(project, service, env, newTag, projectFile)
 	if err != nil {
 		return err
 	}
