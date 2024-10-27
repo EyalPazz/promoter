@@ -73,6 +73,6 @@ argo/
 ## To-Do List
 
 - [x] 1: Make Deployment Platform agnostic
-- [*] 4: Write documentation
+- [x] 4: Write documentation
 - [ ] 2: Add Tests
 - [ ] 3: Expend to more providers and manifest repo structures
