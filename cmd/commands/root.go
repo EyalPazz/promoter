@@ -25,6 +25,11 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env, projectFil
 		return
 	}
 
+	if err = utils.RefreshRepo(passphrase); err != nil {
+		fmt.Println(err)
+		return
+	}
+
 	serviceList, err := getServices(services, project, env, projectFile)
 	if err != nil {
 		fmt.Println(err)
@@ -33,11 +38,6 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env, projectFil
 
 	if tag != "" && len(serviceList) > 1 {
 		fmt.Println("Error: Image Tag Flag Only Supported With One Service")
-		return
-	}
-
-	if err = utils.RefreshRepo(passphrase); err != nil {
-		fmt.Println(err)
 		return
 	}
 
