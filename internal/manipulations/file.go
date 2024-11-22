@@ -28,7 +28,7 @@ func ChangeServiceTag(project, service, env, tag, projectFilePath string) (bool,
 	if _, ok := app[imageTagKey]; ok {
 		app[imageTagKey] = tag
 	} else {
-		return false, errors.New("Image Tag Not found in the service's fields")
+		return false, errors.New("image tag not found in the service's fields")
 	}
 
 	if err = utils.WriteToProjectFile(project, env, projectFilePath, config); err != nil {

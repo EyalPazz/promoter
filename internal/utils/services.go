@@ -15,21 +15,21 @@ func GetServiceImage(service, project, env, projectFilePath string) (string, err
 	}
 
 	for _, serviceConf := range services {
-		serviceMap, ok := serviceConf.(map[string]interface{})
-		name, ok := serviceMap["name"].(string)
-		serviceType, ok := serviceMap["type"].(string)
-		if !ok || name+"-"+serviceType != service {
+		serviceMap, ok1 := serviceConf.(map[string]interface{})
+		name, ok2 := serviceMap["name"].(string)
+		serviceType, ok3 := serviceMap["type"].(string)
+		if (!ok1 || !ok2 || !ok3) || name+"-"+serviceType != service {
 			continue
 		}
 
 		image, ok := serviceMap["image"].(string)
 		if !ok {
-			return "", errors.New("Can't Find a valid image in servicelication's values")
+			return "", errors.New("can't find a valid image in servicelication's values")
 		}
 		return image, nil
 	}
 
-	return "", errors.New("Can't find the requested service in the project's values file")
+	return "", errors.New("can't find the requested service in the project's values file")
 
 }
 
@@ -63,10 +63,10 @@ func GetServicesNames(project, env, projectFilePath string) ([]string, error) {
 	var serviceNames []string
 
 	for _, app := range services {
-		appMap, ok := app.(map[string]interface{})
+		appMap, ok1 := app.(map[string]interface{})
 
-		name, ok := appMap["name"].(string)
-		if !ok {
+		name, ok2 := appMap["name"].(string)
+		if !ok1 || !ok2 {
 			continue
 		}
 

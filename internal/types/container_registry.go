@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	"github.com/aws/aws-sdk-go-v2/service/ecr/types"
 )
 

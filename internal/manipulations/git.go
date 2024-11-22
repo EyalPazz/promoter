@@ -66,12 +66,12 @@ func CommitRepoChange(commitMsg string) error {
 
 	gitName := viper.GetString("git-name")
 	if gitName == "" {
-		return fmt.Errorf("No git name was given in config")
+		return fmt.Errorf("no git name was given in config")
 	}
 
 	gitEmail := viper.GetString("git-email")
 	if gitEmail == "" {
-		return fmt.Errorf("No git email was given in config")
+		return fmt.Errorf("no git email was given in config")
 	}
 
 	_, commitErr := worktree.Commit(commitMsg, &git.CommitOptions{
@@ -102,7 +102,7 @@ func PushToManifest(hasPassphrase bool) error {
 		return err
 	}
 
-	err = repo.Push(&git.PushOptions{
+	_ = repo.Push(&git.PushOptions{
 		RemoteName: "origin",
 		Auth:       auth,
 	})

@@ -15,12 +15,12 @@ func GetImageRepository(project, service, env, projectFilePath string) (string, 
 
 	image, err := GetServiceImage(service, project, env, projectFilePath)
 	if err != nil {
-		return "", fmt.Errorf("Unable to retrieve the input service's image : %s", err)
+		return "", fmt.Errorf("unable to retrieve the input service's image : %s", err)
 	}
 
 	imageParts := strings.Split(image, "/")
 	if len(imageParts) < 2 {
-		return "", errors.New("Invalid Image")
+		return "", errors.New("invalid image")
 	}
 
 	return imageParts[1], nil
@@ -30,18 +30,18 @@ func RefreshRepo(hasPassphrase bool) error {
 
 	if val := ManifestRepoExists(); !val {
 		if err := cloneRepository(hasPassphrase); err != nil {
-			return fmt.Errorf("Error Cloning Git Repo: %s", err)
+			return fmt.Errorf("error cloning git repo: %s", err)
 		}
 	}
 
 	auth, err := auth.GetSSHAuth(hasPassphrase)
 	if err != nil {
-		return fmt.Errorf("Error Authenticating With Git Remote: %s", err)
+		return fmt.Errorf("error authenticating with git remote: %s", err)
 	}
 
 	repo, err := GetRepo()
 	if err != nil {
-		return fmt.Errorf("Error Getting manifest repo: %s", err)
+		return fmt.Errorf("error getting manifest repo: %s", err)
 	}
 
 	err = repo.Fetch(&git.FetchOptions{
@@ -51,12 +51,12 @@ func RefreshRepo(hasPassphrase bool) error {
 	})
 
 	if err != nil && err != git.NoErrAlreadyUpToDate {
-		return fmt.Errorf("Error fetching from remote: %s\n", err)
+		return fmt.Errorf("error fetching from remote: %s", err)
 	}
 
 	w, err := repo.Worktree()
 	if err != nil {
-		return fmt.Errorf("Error getting worktree: %s\n", err)
+		return fmt.Errorf("error getting worktree: %s", err)
 	}
 
 	err = w.Pull(&git.PullOptions{
@@ -66,7 +66,7 @@ func RefreshRepo(hasPassphrase bool) error {
 	})
 
 	if err != nil && err != git.NoErrAlreadyUpToDate {
-		return fmt.Errorf("Error pulling from remote: %s\n", err)
+		return fmt.Errorf("error pulling from remote: %s", err)
 	}
 
 	fmt.Print("Successfully Fetched Recent Updates From Manifest \n\n")
@@ -76,7 +76,7 @@ func RefreshRepo(hasPassphrase bool) error {
 func ManifestRepoExists() bool {
 	manifestPath, err := GetRepoPath()
 	if err != nil {
-		fmt.Printf("Error getting repository path: %s\n", err)
+		fmt.Printf("error getting repository path: %s", err)
 		return false
 	}
 
@@ -103,7 +103,7 @@ func cloneRepository(hasPassphrase bool) error {
 
 	manifestRepoUrl := viper.GetString("manifest-repo")
 	if manifestRepoUrl == "" {
-		return errors.New("No manifest repo URL given")
+		return errors.New("no manifest repo URL given")
 	}
 
 	repoPath, err := GetRepoPath()

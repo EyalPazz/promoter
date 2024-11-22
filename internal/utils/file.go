@@ -28,7 +28,7 @@ func GetProjectConfig(project, env, projectFilePath string) (*Config, error) {
 	var config Config
 
 	if err := yaml.Unmarshal(yamlFile, &config); err != nil {
-		return nil, fmt.Errorf("Error unmarshalling YAML: %v", err)
+		return nil, fmt.Errorf("error unmarshalling YAML: %v", err)
 
 	}
 
@@ -39,7 +39,7 @@ func GetProjectConfig(project, env, projectFilePath string) (*Config, error) {
 func GetProjectFile(project string, env string, repoScoped bool) (string, error) {
 	repoPath, err := GetRepoPath()
 	if err != nil {
-		return "", fmt.Errorf("Error getting repository path: %s\n", err)
+		return "", fmt.Errorf("error getting repository path: %s", err)
 	}
 
 	fileExtensions := []string{".yaml", ".yml"}
@@ -54,7 +54,7 @@ func GetProjectFile(project string, env string, repoScoped bool) (string, error)
 		}
 	}
 
-	return "", fmt.Errorf("Project File Does Not exist")
+	return "", fmt.Errorf("project File Does Not exist")
 }
 
 func WriteToProjectFile(project, env, projectFilePath string, config *Config) error {

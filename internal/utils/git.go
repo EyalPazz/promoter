@@ -78,6 +78,10 @@ func GetLatestRevisions(project, env string, dayInterval int) ([]*object.Commit,
 		return nil
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
 	return res, nil
 }
 
