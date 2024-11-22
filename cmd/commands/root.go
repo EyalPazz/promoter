@@ -3,7 +3,7 @@ package commands
 import (
 	"context"
 	"fmt"
-	"promoter/internal/factories/registry"
+	factories "promoter/internal/factories/registry"
 	"promoter/internal/manipulations"
 	"promoter/internal/types"
 	"promoter/internal/utils"
@@ -14,7 +14,9 @@ import (
 )
 
 func RootCmd(cmd *cobra.Command, region, services, tag, project, env, projectFile string) {
-	passphrase, err := cmd.Flags().GetBool("passphrase")
+	passphrase, _ := cmd.Flags().GetBool("passphrase")
+
+	var err error
 
 	if region == "" {
 		region = viper.GetString("region")
@@ -82,7 +84,7 @@ func getServices(serviceStr, project, env, projectFile string) ([]string, error)
 	if serviceStr == "" {
 		serviceList, err = utils.GetServicesNames(project, env, projectFile)
 		if err != nil {
-			return nil, fmt.Errorf("Error retrieving service names: %v", err)
+			return nil, fmt.Errorf("error retrieving service names: %v", err)
 		}
 	} else {
 		serviceList = strings.Split(serviceStr, ",")
@@ -128,7 +130,7 @@ func processService(ctx context.Context, project, service, env, tag, region, pro
 	if didChange {
 		*changeLog = append(*changeLog, types.ServiceChanges{
 			Name:   service,
-			NewTag: tag,
+			NewTag: newTag,
 		})
 	}
 	return nil
