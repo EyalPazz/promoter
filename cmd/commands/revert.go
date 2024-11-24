@@ -17,12 +17,12 @@ func RevertProject(cmd *cobra.Command) {
 	project, _ := cmd.Flags().GetString("project")
 	since, _ := cmd.Flags().GetInt("since")
 
-    project, _ , err := utils.ValidateProjectAttributes(project, "")
+	project, _, err := utils.ValidateProjectAttributes(project, "")
 
-    if project == "" {
+	if project == "" {
 		fmt.Print(err)
 		return
-    }
+	}
 
 	revs, err := utils.GetLatestRevisions(project, env, since)
 	if err != nil {
@@ -53,11 +53,11 @@ func RevertProject(cmd *cobra.Command) {
 		return
 	}
 
-    projectFile, err := utils.GetProjectFile(project, env, true)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
+	projectFile, err := utils.GetProjectFile(project, env, true)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	file, err := utils.GetFileFromCommit(commits[selected], projectFile)
 	if err != nil {

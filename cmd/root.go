@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-    "os"
+	"os"
 
 	"promoter/cmd/commands"
 
@@ -12,13 +12,13 @@ import (
 
 var (
 	// Used for flags.
-	cfgFile     string
-	project     string
-	services    string
-	env         string
-	tag         string
-	config      Config
-	profile     string
+	cfgFile  string
+	project  string
+	services string
+	env      string
+	tag      string
+	config   Config
+	profile  string
 
 	rootCmd = &cobra.Command{
 		Use:   "promoter",
@@ -72,7 +72,7 @@ func initConfig() {
 	viper.AddConfigPath(home)
 	viper.SetConfigName(".promoter")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath(".") 
+	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Print(fmt.Errorf("fatal error reading config file: %w", err))
@@ -90,8 +90,8 @@ func initConfig() {
 	viper.Set("project-name", selectedProfile.ProjectName)
 	viper.Set("region", selectedProfile.Region)
 
-    fmt.Println("All loaded settings:")
-    for key, value := range viper.AllSettings() {
-        fmt.Printf("%s: %v\n", key, value)
-    }
+	fmt.Println("All loaded settings:")
+	for key, value := range viper.AllSettings() {
+		fmt.Printf("%s: %v\n", key, value)
+	}
 }

@@ -17,11 +17,11 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 
 	var err error
 
-    project, region, err = utils.ValidateProjectAttributes(project,region)
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
+	project, region, err = utils.ValidateProjectAttributes(project, region)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	if err = utils.RefreshRepo(passphrase); err != nil {
 		fmt.Println(err)

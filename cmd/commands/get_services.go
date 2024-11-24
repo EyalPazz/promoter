@@ -12,13 +12,12 @@ func GetServicesCmd(cmd *cobra.Command) {
 	env, _ := cmd.Flags().GetString("env")
 	project, _ := cmd.Flags().GetString("project")
 
-    project, _ , err := utils.ValidateProjectAttributes(project, "")
+	project, _, err := utils.ValidateProjectAttributes(project, "")
 
-    if project == "" {
+	if project == "" {
 		fmt.Print(err)
 		return
-    }
-
+	}
 
 	services, err := utils.GetServicesNames(project, env)
 	if err != nil {

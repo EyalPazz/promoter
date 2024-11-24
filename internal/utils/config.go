@@ -1,7 +1,7 @@
 package utils
 
 import (
-    "fmt"
+	"fmt"
 
 	"github.com/spf13/viper"
 )
@@ -17,7 +17,7 @@ func GetImageTagKey() string {
 	return imageTagKey
 }
 
-func ValidateProjectAttributes(project string, region string)  (string, string, error){
+func ValidateProjectAttributes(project string, region string) (string, string, error) {
 	if project == "" {
 		project = viper.GetString("project-name")
 	}
@@ -34,5 +34,5 @@ func ValidateProjectAttributes(project string, region string)  (string, string, 
 		return "", "", fmt.Errorf("Error: region must be specified either as flags or in the config file")
 	}
 
-    return project, region, nil
+	return project, region, nil
 }

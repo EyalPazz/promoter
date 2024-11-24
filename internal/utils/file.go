@@ -13,10 +13,10 @@ func GetProjectConfig(project, env string) (*Config, error) {
 
 	var err error
 
-    projectFilePath, err := GetProjectFile(project, env, false)
-    if err != nil {
-        return nil, err
-    }
+	projectFilePath, err := GetProjectFile(project, env, false)
+	if err != nil {
+		return nil, err
+	}
 
 	yamlFile, err := os.ReadFile(projectFilePath)
 	if err != nil {
@@ -57,10 +57,10 @@ func GetProjectFile(project string, env string, repoScoped bool) (string, error)
 
 func WriteToProjectFile(project, env string, config *Config) error {
 
-    projectFilePath, err := GetProjectFile(project, env, false)
-		if err != nil {
-			return err
-		}
+	projectFilePath, err := GetProjectFile(project, env, false)
+	if err != nil {
+		return err
+	}
 
 	updatedYAML, err := yaml.Marshal(config)
 	if err != nil {
