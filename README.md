@@ -21,19 +21,19 @@ make install
 To promote a service to the production environment with the latest image tag, use:
 
 ```bash
-promoter --project <project_name> --service <service_name> --env production
+promoter --service <service_name> --env production
 ```
 
 To promote a service to the production environment with a specific image tag, use:
 
 ```bash
-promoter --project <project_name> --service <service_name> --env production
+promoter --service <service_name> --env production
 ```
 
 To promote all services of a project to the production environment with the latest image tag, use:
 
 ```bash
-promoter --project <project_name> --env production
+promoter  --env production
 ```
 
 ### Reverting
@@ -41,8 +41,10 @@ promoter --project <project_name> --env production
 To revert all services of a project to a certain revision
 
 ```bash
-promoter revert --project <project_name> --env production
+promoter revert --env production
 ```
+
+** You can also use the project flag to override the .promoter.yaml config **
 
 ## Configuration
 
@@ -53,9 +55,14 @@ git-email: <Your Git Email>
 git-name: <Your Git Name>
 manifest-repo: <Config Files Repo URL>
 ssh-key: <Git SSH Key Path>
-region: <Region of Your Container Registry>
 manifest-repo-root: < ** OPTIONAL ** For app of apps repos>
+
+default:
+  project: X
+  region: Y
 ```
+
+You can also add another profile and use --profile with it's name
 
 Your manifest project structure should follow this format:
 

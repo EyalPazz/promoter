@@ -52,7 +52,7 @@ func GetProjectFile(project string, env string, repoScoped bool) (string, error)
 		}
 	}
 
-	return "", fmt.Errorf("project File Does Not exist")
+	return "", fmt.Errorf("project file does not exist")
 }
 
 func WriteToProjectFile(project, env string, config *Config) error {
