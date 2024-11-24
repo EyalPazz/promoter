@@ -90,8 +90,4 @@ func initConfig() {
 	viper.Set("project-name", selectedProfile.ProjectName)
 	viper.Set("region", selectedProfile.Region)
 
-	fmt.Println("All loaded settings:")
-	for key, value := range viper.AllSettings() {
-		fmt.Printf("%s: %v\n", key, value)
-	}
 }
