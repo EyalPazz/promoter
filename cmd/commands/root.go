@@ -10,29 +10,25 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
-func RootCmd(cmd *cobra.Command, region, services, tag, project, env, projectFile string) {
+func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 	passphrase, _ := cmd.Flags().GetBool("passphrase")
 
 	var err error
 
-	if region == "" {
-		region = viper.GetString("region")
-	}
-
-	if region == "" {
-		fmt.Println("Error: region must be specified either as flags or in the config file")
-		return
-	}
+    project, region, err = utils.ValidateProjectAttributes(project,region)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
 
 	if err = utils.RefreshRepo(passphrase); err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	serviceList, err := getServices(services, project, env, projectFile)
+	serviceList, err := getServices(services, project, env)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -49,7 +45,7 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env, projectFil
 
 	// TODO: Think about the trade-offs in making this async
 	for _, service := range serviceList {
-		if err := processService(ctx, project, service, env, tag, region, projectFile, &changeLog); err != nil {
+		if err := processService(ctx, project, service, env, tag, region, &changeLog); err != nil {
 			fmt.Println(err)
 			if len(changeLog) > 0 {
 				fmt.Println("Reverting Changes...")
@@ -77,12 +73,12 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env, projectFil
 	fmt.Println("Success!")
 }
 
-func getServices(serviceStr, project, env, projectFile string) ([]string, error) {
+func getServices(serviceStr, project, env string) ([]string, error) {
 	var serviceList []string
 	var err error
 
 	if serviceStr == "" {
-		serviceList, err = utils.GetServicesNames(project, env, projectFile)
+		serviceList, err = utils.GetServicesNames(project, env)
 		if err != nil {
 			return nil, fmt.Errorf("error retrieving service names: %v", err)
 		}
@@ -93,8 +89,8 @@ func getServices(serviceStr, project, env, projectFile string) ([]string, error)
 	return serviceList, nil
 }
 
-func processService(ctx context.Context, project, service, env, tag, region, projectFile string, changeLog *[]types.ServiceChanges) error {
-	repoName, err := utils.GetImageRepository(project, service, env, projectFile)
+func processService(ctx context.Context, project, service, env, tag, region string, changeLog *[]types.ServiceChanges) error {
+	repoName, err := utils.GetImageRepository(project, service, env)
 	if err != nil {
 		return err
 	}
@@ -122,7 +118,7 @@ func processService(ctx context.Context, project, service, env, tag, region, pro
 		newTag = latestImage.ImageTags[len(latestImage.ImageTags)-1]
 	}
 
-	didChange, err := manipulations.ChangeServiceTag(project, service, env, newTag, projectFile)
+	didChange, err := manipulations.ChangeServiceTag(project, service, env, newTag)
 	if err != nil {
 		return err
 	}

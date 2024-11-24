@@ -15,13 +15,14 @@ func RevertProject(cmd *cobra.Command) {
 	env, _ := cmd.Flags().GetString("env")
 	passphrase, _ := cmd.Flags().GetBool("passphrase")
 	project, _ := cmd.Flags().GetString("project")
-	projectFile, _ := cmd.Root().PersistentFlags().GetString("project-file")
 	since, _ := cmd.Flags().GetInt("since")
 
-	if projectFile == "" && (env == "" || project == "") {
-		fmt.Print("You Need to either provide both env and project flags, or the project-file path")
+    project, _ , err := utils.ValidateProjectAttributes(project, "")
+
+    if project == "" {
+		fmt.Print(err)
 		return
-	}
+    }
 
 	revs, err := utils.GetLatestRevisions(project, env, since)
 	if err != nil {
@@ -52,13 +53,11 @@ func RevertProject(cmd *cobra.Command) {
 		return
 	}
 
-	if projectFile == "" {
-		projectFile, err = utils.GetProjectFile(project, env, true)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-	}
+    projectFile, err := utils.GetProjectFile(project, env, true)
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
 
 	file, err := utils.GetFileFromCommit(commits[selected], projectFile)
 	if err != nil {
@@ -66,7 +65,7 @@ func RevertProject(cmd *cobra.Command) {
 		return
 	}
 
-	if err = utils.WriteToProjectFile(project, env, "", file); err != nil {
+	if err = utils.WriteToProjectFile(project, env, file); err != nil {
 		fmt.Println(err)
 		return
 	}

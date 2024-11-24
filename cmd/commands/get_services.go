@@ -8,16 +8,19 @@ import (
 )
 
 func GetServicesCmd(cmd *cobra.Command) {
+
 	env, _ := cmd.Flags().GetString("env")
 	project, _ := cmd.Flags().GetString("project")
-	projectFile, _ := cmd.Root().PersistentFlags().GetString("project-file")
 
-	if projectFile == "" && (env == "" || project == "") {
-		fmt.Print("You Need to either provide both env and project flags, or the project-file path")
+    project, _ , err := utils.ValidateProjectAttributes(project, "")
+
+    if project == "" {
+		fmt.Print(err)
 		return
-	}
+    }
 
-	services, err := utils.GetServicesNames(project, env, projectFile)
+
+	services, err := utils.GetServicesNames(project, env)
 	if err != nil {
 		fmt.Print(err)
 		return

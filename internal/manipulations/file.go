@@ -6,9 +6,9 @@ import (
 	"promoter/internal/utils"
 )
 
-func ChangeServiceTag(project, service, env, tag, projectFilePath string) (bool, error) {
+func ChangeServiceTag(project, service, env, tag string) (bool, error) {
 
-	config, err := utils.GetProjectConfig(project, env, projectFilePath)
+	config, err := utils.GetProjectConfig(project, env)
 	if err != nil {
 		return false, err
 	}
@@ -31,7 +31,7 @@ func ChangeServiceTag(project, service, env, tag, projectFilePath string) (bool,
 		return false, errors.New("image tag not found in the service's fields")
 	}
 
-	if err = utils.WriteToProjectFile(project, env, projectFilePath, config); err != nil {
+	if err = utils.WriteToProjectFile(project, env, config); err != nil {
 		return false, err
 	}
 

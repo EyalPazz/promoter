@@ -9,16 +9,14 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func GetProjectConfig(project, env, projectFilePath string) (*Config, error) {
+func GetProjectConfig(project, env string) (*Config, error) {
 
 	var err error
 
-	if projectFilePath == "" {
-		projectFilePath, err = GetProjectFile(project, env, false)
-		if err != nil {
-			return nil, err
-		}
-	}
+    projectFilePath, err := GetProjectFile(project, env, false)
+    if err != nil {
+        return nil, err
+    }
 
 	yamlFile, err := os.ReadFile(projectFilePath)
 	if err != nil {
@@ -57,15 +55,12 @@ func GetProjectFile(project string, env string, repoScoped bool) (string, error)
 	return "", fmt.Errorf("project File Does Not exist")
 }
 
-func WriteToProjectFile(project, env, projectFilePath string, config *Config) error {
-	var err error
+func WriteToProjectFile(project, env string, config *Config) error {
 
-	if projectFilePath == "" {
-		projectFilePath, err = GetProjectFile(project, env, false)
+    projectFilePath, err := GetProjectFile(project, env, false)
 		if err != nil {
 			return err
 		}
-	}
 
 	updatedYAML, err := yaml.Marshal(config)
 	if err != nil {
