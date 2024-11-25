@@ -35,5 +35,7 @@ func ChangeServiceTag(project, service, env, tag string) (bool, error) {
 		return false, err
 	}
 
+	fmt.Printf("Updating service %s to tag %s\n", service, tag)
+
 	return true, nil
 }
