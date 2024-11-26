@@ -18,23 +18,25 @@ make install
 
 ### Promotion
 
-To promote a service to the production environment with the latest image tag, use:
+To promote all services of a project to an environment with the latest image tag, use:
 
 ```bash
-promoter --service <service_name> --env production
+promoter  --env <env>
 ```
 
-To promote a service to the production environment with a specific image tag, use:
+To promote certain services of a project to an environment with the latest image tag, use:
 
 ```bash
-promoter --service <service_name> --env production
+promoter --services <services list, seperated by commas> --env <env>
 ```
 
-To promote all services of a project to the production environment with the latest image tag, use:
+To promote a service to an environment with a specific image tag, use:
 
 ```bash
-promoter  --env production
+promoter --services <service_name> -tag <tag> --env <env>
 ```
+
+You can also use the -i (or --interactive) in order to promote interactively
 
 ### Reverting
 
@@ -58,7 +60,7 @@ ssh-key: <Git SSH Key Path>
 manifest-repo-root: < ** OPTIONAL ** For app of apps repos>
 
 default:
-  project: X
+  project-name: X
   region: Y
 ```
 
@@ -80,6 +82,6 @@ argo/
 ## To-Do List
 
 - [x] 1: Make Deployment Platform agnostic
-- [x] 4: Write documentation
 - [ ] 2: Add Tests
 - [ ] 3: Expend to more providers and manifest repo structures
+- [x] 4: Write documentation
