@@ -14,6 +14,7 @@ import (
 
 func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 	passphrase, _ := cmd.Flags().GetBool("passphrase")
+	interactive, _ := cmd.Flags().GetBool("interactive")
 
 	var err error
 
@@ -45,7 +46,7 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 
 	// TODO: Think about the trade-offs in making this async
 	for _, service := range serviceList {
-		if err := processService(ctx, project, service, env, tag, region, &changeLog); err != nil {
+		if err := processService(ctx, project, service, env, tag, region, &changeLog, interactive); err != nil {
 			fmt.Println(err)
 			if len(changeLog) > 0 {
 				fmt.Println("Reverting Changes...")
@@ -89,7 +90,7 @@ func getServices(serviceStr, project, env string) ([]string, error) {
 	return serviceList, nil
 }
 
-func processService(ctx context.Context, project, service, env, tag, region string, changeLog *[]types.ServiceChanges) error {
+func processService(ctx context.Context, project, service, env, tag, region string, changeLog *[]types.ServiceChanges, interactive bool) error {
 	repoName, err := utils.GetImageRepository(project, service, env)
 	if err != nil {
 		return err
@@ -118,12 +119,13 @@ func processService(ctx context.Context, project, service, env, tag, region stri
 		newTag = latestImage.ImageTags[len(latestImage.ImageTags)-1]
 	}
 
-	didChange, err := manipulations.ChangeServiceTag(project, service, env, newTag)
+	didChange, err := manipulations.ChangeServiceTag(project, service, env, newTag, interactive)
 	if err != nil {
 		return err
 	}
 
 	if didChange {
+
 		*changeLog = append(*changeLog, types.ServiceChanges{
 			Name:   service,
 			NewTag: newTag,

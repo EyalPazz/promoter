@@ -56,6 +56,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&profile, "profile", "p", "default", "Configuration profile to use")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.promoter.yaml)")
 	rootCmd.PersistentFlags().Bool("passphrase", false, "Whether or not to prompt for ssh key passphrase")
+	rootCmd.PersistentFlags().BoolP("interactive", "i", false, "Ask for confirmation in each change")
 
 	rootCmd.Flags().StringVar(&services, "services", "", "Services  (separeted by a comma)")
 	rootCmd.Flags().StringVar(&project, "project", "", "Project name (required)")
