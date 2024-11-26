@@ -18,12 +18,20 @@ var (
 	env      string
 	tag      string
 	config   Config
+    showVersion bool
 	profile  string
+    Version string = "dev"
 
 	rootCmd = &cobra.Command{
 		Use:   "promoter",
 		Short: "promoter is a CLI tool to easily deploy services",
 		Long:  `promoter is a CLI tool to easily deploy services across different environments`,
+        PersistentPreRun: func(cmd *cobra.Command, args []string) {
+            if showVersion {
+                fmt.Printf("%s\n", Version)
+                os.Exit(0)
+            }
+	},
 		Run: func(cmd *cobra.Command, args []string) {
 			commands.RootCmd(cmd, region, services, tag, project, env)
 		},
@@ -52,6 +60,8 @@ func Execute() error {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+
+	rootCmd.PersistentFlags().BoolVarP(&showVersion, "version", "v", false, "Show version number")
 
 	rootCmd.PersistentFlags().StringVarP(&profile, "profile", "p", "default", "Configuration profile to use")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.promoter.yaml)")

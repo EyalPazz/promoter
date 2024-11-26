@@ -18,17 +18,8 @@ jobs:
         with:
           go-version: 1.22
 
-      - name: Build MacOS Intel Chip binary
-        run: GOOS=darwin GOARCH=amd64 go build -o promoter_darwin_amd64
-
-      - name: Build MacOS Silicon Chip binary
-        run: GOOS=darwin GOARCH=arm64 go build -o promoter_darwin_arm64
-
-      - name: Build Linux Intel Chip binary
-        run: GOOS=linux GOARCH=amd64 go build -o promoter_linux_amd64
-
-      - name: Build Linux ARM Chip binary
-        run: GOOS=linux GOARCH=arm64 go build -o promoter_linux_arm64
+      - name: Build Binaries
+        run: make
 
       - name: Create Release
         id: create_release
