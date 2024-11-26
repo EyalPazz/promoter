@@ -20,16 +20,17 @@ func ChangeServiceTag(project, service, env, tag string) (bool, error) {
 
 	imageTagKey := utils.GetImageTagKey()
 
-	if app[imageTagKey] == tag {
-		fmt.Printf("Service %s is already at latest tag \n", service)
-		return false, nil
-	}
-
 	if _, ok := app[imageTagKey]; ok {
 		app[imageTagKey] = tag
 	} else {
 		return false, errors.New("image tag not found in the service's fields")
 	}
+
+	if app[imageTagKey] == tag {
+		fmt.Printf("Service %s is already at latest tag \n", service)
+		return false, nil
+	}
+
 
 	if err = utils.WriteToProjectFile(project, env, config); err != nil {
 		return false, err
