@@ -12,26 +12,27 @@ import (
 
 var (
 	// Used for flags.
-	cfgFile  string
-	project  string
-	services string
-	env      string
-	tag      string
-	config   Config
-    showVersion bool
-	profile  string
-    Version string = "dev"
+	cfgFile     string
+	project     string
+	services    string
+	env         string
+	tag         string
+	region      string
+	config      Config
+	showVersion bool
+	profile     string
+	Version     string = "dev"
 
 	rootCmd = &cobra.Command{
 		Use:   "promoter",
 		Short: "promoter is a CLI tool to easily deploy services",
 		Long:  `promoter is a CLI tool to easily deploy services across different environments`,
-        PersistentPreRun: func(cmd *cobra.Command, args []string) {
-            if showVersion {
-                fmt.Printf("%s\n", Version)
-                os.Exit(0)
-            }
-	},
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			if showVersion {
+				fmt.Printf("%s\n", Version)
+				os.Exit(0)
+			}
+		},
 		Run: func(cmd *cobra.Command, args []string) {
 			commands.RootCmd(cmd, region, services, tag, project, env)
 		},
@@ -68,12 +69,17 @@ func init() {
 	rootCmd.PersistentFlags().Bool("passphrase", false, "Whether or not to prompt for ssh key passphrase")
 	rootCmd.PersistentFlags().BoolP("interactive", "i", false, "Ask for confirmation in each change")
 
+	rootCmd.Flags().StringVar(&region, "region", "", "AWS Region for repository")
 	rootCmd.Flags().StringVar(&services, "services", "", "Services  (separeted by a comma)")
 	rootCmd.Flags().StringVar(&project, "project", "", "Project name (required)")
 	rootCmd.Flags().StringVar(&env, "env", "", "Environment name (required)")
 	rootCmd.Flags().StringVar(&tag, "tag", "", "Specific image tag to promote (or revert) to (Only Supported With One Service)")
 
-	rootCmd.MarkFlagRequired("env")
+	err := rootCmd.MarkFlagRequired("env")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
 
 func initConfig() {
@@ -98,7 +104,11 @@ func initConfig() {
 		fmt.Print(fmt.Errorf("profile '%s' not found in configuration", profile))
 	}
 
+	if region == "" {
+		region = selectedProfile.Region
+	}
+
 	viper.Set("project-name", selectedProfile.ProjectName)
-	viper.Set("region", selectedProfile.Region)
+	viper.Set("region", region)
 
 }

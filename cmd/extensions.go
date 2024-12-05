@@ -6,10 +6,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	region string
-)
-
 func Extend(rootCmd *cobra.Command) {
 
 	rootCmd.AddCommand(RefreshManifestRepoCmd)
