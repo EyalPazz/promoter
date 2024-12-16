@@ -102,10 +102,14 @@ func PushToManifest(hasPassphrase bool) error {
 		return err
 	}
 
-	_ = repo.Push(&git.PushOptions{
+	err = repo.Push(&git.PushOptions{
 		RemoteName: "origin",
 		Auth:       auth,
 	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -115,7 +119,7 @@ func HandleRepoActions(commitMsg string, passphrase bool) error {
 	}
 
 	if err := PushToManifest(passphrase); err != nil {
-		return err
+		return fmt.Errorf("error when pushing to remote origin: %s \n Consider deleting the promoter internal data in ~/promoter-data/manifest and cause promoter to re-clone", err)
 	}
 
 	return nil
