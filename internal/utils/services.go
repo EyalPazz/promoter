@@ -69,15 +69,37 @@ func GetServicesNames(project, env string) ([]string, error) {
 		if !ok1 || !ok2 {
 			continue
 		}
+func GetServicesFields(project, env string, fields ...string) ([]map[string]interface{}, error) {
 
-		appType, ok := appMap["type"].(string)
+	services, err := GetServices(project, env)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []map[string]interface{}
+
+
+	for _, app := range services {
+		appMap, ok := app.(map[string]interface{})
 		if !ok {
 			continue
 		}
 
-		serviceNames = append(serviceNames, name+"-"+appType)
+		extractedFields := make(map[string]interface{})
+
+		for index, field := range fields {
+			if val, exists := appMap[field]; exists {
+				extractedFields[field] = val
+			} else {
+                fmt.Printf("error: no %s field in service %s \n", field, strconv.Itoa(index))
+            }
+		}
+
+		if len(extractedFields) > 0 {
+			result = append(result, extractedFields)
+		}
 	}
-	return serviceNames, nil
+	return result, nil
 }
 
 func FindService(config *Config, service string) (map[string]interface{}, error) {
