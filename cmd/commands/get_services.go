@@ -19,13 +19,14 @@ func GetServicesCmd(cmd *cobra.Command) {
 		return
 	}
 
-	services, err := utils.GetServicesNames(project, env)
+    serviceAttributes, err := utils.GetServicesFields(project, env, "name", "type", "imageTag")
 	if err != nil {
 		fmt.Print(err)
 		return
 	}
 
-	for _, app := range services {
-		fmt.Println("* " + app)
+	for _ , atts := range serviceAttributes {
+        // TODO: Assert Types Before Print
+        fmt.Printf("* %s-%s : %s \n", atts["name"].(string),atts["type"].(string), atts["imageTag"].(string))
 	}
 }

@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
+    "strconv"
 )
 
 type Config map[interface{}]interface{}
@@ -54,7 +55,7 @@ func GetServices(project, env string) ([]interface{}, error) {
 
 func GetServicesNames(project, env string) ([]string, error) {
 
-	services, err := GetServices(project, env)
+	services, err := GetServicesFields(project, env, "name", "type")
 
 	if err != nil {
 		return nil, err
@@ -62,13 +63,12 @@ func GetServicesNames(project, env string) ([]string, error) {
 
 	var serviceNames []string
 
-	for _, app := range services {
-		appMap, ok1 := app.(map[string]interface{})
+	for _, atts := range services {
+		serviceNames = append(serviceNames, fmt.Sprintf("%s-%s", atts["name"] , atts["type"]))
+	}
+	return serviceNames, nil
+}
 
-		name, ok2 := appMap["name"].(string)
-		if !ok1 || !ok2 {
-			continue
-		}
 func GetServicesFields(project, env string, fields ...string) ([]map[string]interface{}, error) {
 
 	services, err := GetServices(project, env)
