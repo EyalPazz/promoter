@@ -93,15 +93,18 @@ func initConfig() {
 
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Print(fmt.Errorf("fatal error reading config file: %w", err))
+        os.Exit(1)
 	}
 
 	if err := viper.Unmarshal(&config); err != nil {
 		fmt.Print(fmt.Errorf("unable to decode into config struct: %w", err))
+        os.Exit(1)
 	}
 
 	selectedProfile, exists := config.Profiles[profile]
 	if !exists {
 		fmt.Print(fmt.Errorf("profile '%s' not found in configuration", profile))
+        os.Exit(1)
 	}
 
 	if region == "" {
