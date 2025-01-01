@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"promoter/cmd/commands"
+    "promoter/internal/types"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -18,7 +19,7 @@ var (
 	env         string
 	tag         string
 	region      string
-	config      Config
+	config      types.Config
 	showVersion bool
 	profile     string
 	Version     string = "dev"
@@ -39,19 +40,6 @@ var (
 	}
 )
 
-type Profile struct {
-	ProjectName string `mapstructure:"project-name"`
-	Region      string `mapstructure:"region"`
-}
-
-type Config struct {
-	GitName          string             `mapstructure:"git-name"`
-	GitEmail         string             `mapstructure:"git-email"`
-	SSHKey           string             `mapstructure:"ssh-key"`
-	ManifestRepo     string             `mapstructure:"manifest-repo"`
-	ManifestRepoRoot string             `mapstructure:"manifest-repo-root"`
-	Profiles         map[string]Profile `mapstructure:",remain"`
-}
 
 // Execute executes the root command.
 func Execute() error {
@@ -106,6 +94,8 @@ func initConfig() {
 		fmt.Print(fmt.Errorf("profile '%s' not found in configuration", profile))
         os.Exit(1)
 	}
+
+    viper.Set("config", config)
 
 	if region == "" {
 		region = selectedProfile.Region

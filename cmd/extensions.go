@@ -25,6 +25,10 @@ func Extend(rootCmd *cobra.Command) {
 	RevertProjectCmd.Flags().Int("since", 7, "Time interval to get revisions from (in days, defaults to 7)")
 
 	RevertProjectCmd.MarkFlagRequired("env")
+
+	rootCmd.AddCommand(GetProfileCmd)
+    GetProfileCmd.Flags().Bool("all", false, "return all profile names")
+
 }
 
 var RefreshManifestRepoCmd = &cobra.Command{
@@ -51,5 +55,14 @@ var GetServicesCmd = &cobra.Command{
 	Long:  "Get All Services in a certain project",
 	Run: func(cmd *cobra.Command, args []string) {
 		commands.GetServicesCmd(cmd)
+	},
+}
+
+var GetProfileCmd = &cobra.Command{
+	Use:   "profile",
+	Short: "Get Active (Or all services)",
+	Long:  "Get Active (Or all services)",
+	Run: func(cmd *cobra.Command, args []string) {
+		commands.GetProfile(cmd)
 	},
 }
