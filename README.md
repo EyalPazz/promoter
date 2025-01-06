@@ -18,31 +18,35 @@ make install
 
 ### Promotion
 
-To promote a service to the production environment with the latest image tag, use:
+To promote all services of a project to an environment with the latest image tag, use:
 
 ```bash
-promoter --project <project_name> --service <service_name> --env production
+promoter  --env <env>
 ```
 
-To promote a service to the production environment with a specific image tag, use:
+To promote certain services of a project to an environment with the latest image tag, use:
 
 ```bash
-promoter --project <project_name> --service <service_name> --env production
+promoter --services <services list, seperated by commas> --env <env>
 ```
 
-To promote all services of a project to the production environment with the latest image tag, use:
+To promote a service to an environment with a specific image tag, use:
 
 ```bash
-promoter --project <project_name> --env production
+promoter --services <service_name> -tag <tag> --env <env>
 ```
+
+You can also use the -i (or --interactive) in order to promote interactively
 
 ### Reverting
 
 To revert all services of a project to a certain revision
 
 ```bash
-promoter revert --project <project_name> --env production
+promoter revert --env production
 ```
+
+** You can also use the project flag to override the .promoter.yaml config **
 
 ## Configuration
 
@@ -53,9 +57,14 @@ git-email: <Your Git Email>
 git-name: <Your Git Name>
 manifest-repo: <Config Files Repo URL>
 ssh-key: <Git SSH Key Path>
-region: <Region of Your Container Registry>
 manifest-repo-root: < ** OPTIONAL ** For app of apps repos>
+
+default:
+  project-name: X
+  region: Y
 ```
+
+You can also add another profile and use --profile with it's name
 
 Your manifest project structure should follow this format:
 
@@ -73,6 +82,6 @@ argo/
 ## To-Do List
 
 - [x] 1: Make Deployment Platform agnostic
-- [x] 4: Write documentation
 - [ ] 2: Add Tests
 - [ ] 3: Expend to more providers and manifest repo structures
+- [x] 4: Write documentation

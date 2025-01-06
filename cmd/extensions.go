@@ -6,24 +6,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	region string
-)
-
 func Extend(rootCmd *cobra.Command) {
 
 	rootCmd.AddCommand(RefreshManifestRepoCmd)
 
-	GetServicesCmd.Flags().String("project", "", "Project name (required)")
-	GetServicesCmd.Flags().String("service", "", "Service name (required)")
-	GetServicesCmd.Flags().String("env", "", "Environment name (required)")
 	rootCmd.AddCommand(GetServicesCmd)
 
+	GetServicesCmd.Flags().String("project", "", "Project name")
+	GetServicesCmd.Flags().String("service", "", "Service name (required)")
+	GetServicesCmd.Flags().String("env", "", "Environment name (required)")
+	GetServicesCmd.MarkFlagRequired("env")
+
 	rootCmd.AddCommand(RevertProjectCmd)
-	RevertProjectCmd.Flags().String("project", "", "Project name (required)")
+
+	RevertProjectCmd.Flags().String("project", "", "Project name")
 	RevertProjectCmd.Flags().String("service", "", "Service name (required)")
 	RevertProjectCmd.Flags().String("env", "", "Environment name (required)")
-	RevertProjectCmd.Flags().Int("since", 7, "Time interval to get revisions from (defaults to 7)")
+	RevertProjectCmd.Flags().Int("since", 7, "Time interval to get revisions from (in days, defaults to 7)")
+
+	RevertProjectCmd.MarkFlagRequired("env")
+
+	rootCmd.AddCommand(GetProfileCmd)
+    GetProfileCmd.Flags().Bool("all", false, "return all profile names")
 
 }
 
@@ -51,5 +55,14 @@ var GetServicesCmd = &cobra.Command{
 	Long:  "Get All Services in a certain project",
 	Run: func(cmd *cobra.Command, args []string) {
 		commands.GetServicesCmd(cmd)
+	},
+}
+
+var GetProfileCmd = &cobra.Command{
+	Use:   "profile",
+	Short: "Get Active (Or all services)",
+	Long:  "Get Active (Or all services)",
+	Run: func(cmd *cobra.Command, args []string) {
+		commands.GetProfile(cmd)
 	},
 }

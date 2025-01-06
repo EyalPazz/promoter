@@ -11,9 +11,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-func GetImageRepository(project, service, env, projectFilePath string) (string, error) {
+func GetImageRepository(project, service, env string) (string, error) {
 
-	image, err := GetServiceImage(service, project, env, projectFilePath)
+	image, err := GetServiceImage(service, project, env)
 	if err != nil {
 		return "", fmt.Errorf("unable to retrieve the input service's image : %s", err)
 	}

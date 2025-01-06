@@ -3,12 +3,13 @@ package utils
 import (
 	"errors"
 	"fmt"
+    "strconv"
 )
 
 type Config map[interface{}]interface{}
 
-func GetServiceImage(service, project, env, projectFilePath string) (string, error) {
-	services, err := GetServices(project, env, projectFilePath)
+func GetServiceImage(service, project, env string) (string, error) {
+	services, err := GetServices(project, env)
 
 	if err != nil {
 		return "", err
@@ -33,9 +34,9 @@ func GetServiceImage(service, project, env, projectFilePath string) (string, err
 
 }
 
-func GetServices(project, env, projectFilePath string) ([]interface{}, error) {
+func GetServices(project, env string) ([]interface{}, error) {
 
-	config, err := GetProjectConfig(project, env, projectFilePath)
+	config, err := GetProjectConfig(project, env)
 	if err != nil {
 		return nil, err
 	}
@@ -52,9 +53,9 @@ func GetServices(project, env, projectFilePath string) ([]interface{}, error) {
 	return services, nil
 }
 
-func GetServicesNames(project, env, projectFilePath string) ([]string, error) {
+func GetServicesNames(project, env string) ([]string, error) {
 
-	services, err := GetServices(project, env, projectFilePath)
+	services, err := GetServicesFields(project, env, "name", "type")
 
 	if err != nil {
 		return nil, err
@@ -62,22 +63,43 @@ func GetServicesNames(project, env, projectFilePath string) ([]string, error) {
 
 	var serviceNames []string
 
+	for _, atts := range services {
+		serviceNames = append(serviceNames, fmt.Sprintf("%s-%s", atts["name"] , atts["type"]))
+	}
+	return serviceNames, nil
+}
+
+func GetServicesFields(project, env string, fields ...string) ([]map[string]interface{}, error) {
+
+	services, err := GetServices(project, env)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []map[string]interface{}
+
+
 	for _, app := range services {
-		appMap, ok1 := app.(map[string]interface{})
-
-		name, ok2 := appMap["name"].(string)
-		if !ok1 || !ok2 {
-			continue
-		}
-
-		appType, ok := appMap["type"].(string)
+		appMap, ok := app.(map[string]interface{})
 		if !ok {
 			continue
 		}
 
-		serviceNames = append(serviceNames, name+"-"+appType)
+		extractedFields := make(map[string]interface{})
+
+		for index, field := range fields {
+			if val, exists := appMap[field]; exists {
+				extractedFields[field] = val
+			} else {
+                fmt.Printf("error: no %s field in service %s \n", field, strconv.Itoa(index))
+            }
+		}
+
+		if len(extractedFields) > 0 {
+			result = append(result, extractedFields)
+		}
 	}
-	return serviceNames, nil
+	return result, nil
 }
 
 func FindService(config *Config, service string) (map[string]interface{}, error) {

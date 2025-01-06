@@ -4,11 +4,13 @@ import (
 	"errors"
 	"fmt"
 	"promoter/internal/utils"
+
+	"github.com/AlecAivazis/survey/v2"
 )
 
-func ChangeServiceTag(project, service, env, tag, projectFilePath string) (bool, error) {
+func ChangeServiceTag(project, service, env, tag string, interactive bool) (bool, error) {
 
-	config, err := utils.GetProjectConfig(project, env, projectFilePath)
+	config, err := utils.GetProjectConfig(project, env)
 	if err != nil {
 		return false, err
 	}
@@ -20,18 +22,36 @@ func ChangeServiceTag(project, service, env, tag, projectFilePath string) (bool,
 
 	imageTagKey := utils.GetImageTagKey()
 
-	if app[imageTagKey] == tag {
-		fmt.Printf("Service %s is already at latest tag \n", service)
-		return false, nil
-	}
-
-	if _, ok := app[imageTagKey]; ok {
-		app[imageTagKey] = tag
-	} else {
+	if _, ok := app[imageTagKey]; !ok {
 		return false, errors.New("image tag not found in the service's fields")
 	}
 
-	if err = utils.WriteToProjectFile(project, env, projectFilePath, config); err != nil {
+	if app[imageTagKey] == tag {
+		fmt.Printf("Service %s is already at latest / input tag \n", service)
+		return false, nil
+	}
+
+	var change bool = true
+
+	if interactive {
+
+		confirmPrompt := &survey.Confirm{
+			Message: fmt.Sprintf("Update %s to %s?", service, tag),
+			Default: false,
+		}
+		if err := survey.AskOne(confirmPrompt, &change); err != nil {
+			return false, err
+		}
+	} else {
+		fmt.Printf("Updating service %s to %s\n", service, tag)
+	}
+
+	if !change {
+		return false, nil
+	}
+
+	app[imageTagKey] = tag
+	if err = utils.WriteToProjectFile(project, env, config); err != nil {
 		return false, err
 	}
 

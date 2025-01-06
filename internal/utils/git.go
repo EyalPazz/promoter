@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	DEFAULT_PROMOTER_DIR = "/promoter-data/repositories/"
+	DEFAULT_PROMOTER_DIR = "/promoter-data/"
 )
 
 func GetRepoPath() (string, error) {
