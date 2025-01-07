@@ -27,7 +27,7 @@ func Extend(rootCmd *cobra.Command) {
 	RevertProjectCmd.MarkFlagRequired("env")
 
 	rootCmd.AddCommand(GetProfileCmd)
-    GetProfileCmd.Flags().Bool("all", false, "return all profile names")
+	GetProfileCmd.Flags().Bool("all", false, "return all profile names")
 
 }
 

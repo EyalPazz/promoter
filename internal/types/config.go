@@ -13,4 +13,3 @@ type Profile struct {
 	ProjectName string `mapstructure:"project-name"`
 	Region      string `mapstructure:"region"`
 }
-

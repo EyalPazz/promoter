@@ -3,7 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
-    "strconv"
+	"strconv"
 )
 
 type Config map[interface{}]interface{}
@@ -64,7 +64,7 @@ func GetServicesNames(project, env string) ([]string, error) {
 	var serviceNames []string
 
 	for _, atts := range services {
-		serviceNames = append(serviceNames, fmt.Sprintf("%s-%s", atts["name"] , atts["type"]))
+		serviceNames = append(serviceNames, fmt.Sprintf("%s-%s", atts["name"], atts["type"]))
 	}
 	return serviceNames, nil
 }
@@ -78,7 +78,6 @@ func GetServicesFields(project, env string, fields ...string) ([]map[string]inte
 
 	var result []map[string]interface{}
 
-
 	for _, app := range services {
 		appMap, ok := app.(map[string]interface{})
 		if !ok {
@@ -91,8 +90,8 @@ func GetServicesFields(project, env string, fields ...string) ([]map[string]inte
 			if val, exists := appMap[field]; exists {
 				extractedFields[field] = val
 			} else {
-                fmt.Printf("error: no %s field in service %s \n", field, strconv.Itoa(index))
-            }
+				fmt.Printf("error: no %s field in service %s \n", field, strconv.Itoa(index))
+			}
 		}
 
 		if len(extractedFields) > 0 {
