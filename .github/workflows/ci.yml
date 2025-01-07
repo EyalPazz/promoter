@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Format Check
+        run: test -z "$(gofmt -l -d .)"
+        shell: bash
+
+  lint:
+    runs-on: ubuntu-latest
+    needs: format
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Golangci-Lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.60
+
+  test:
+    runs-on: ubuntu-latest
+    needs: [format, lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.22
+
+      - name: Create SSH Key File For Tests
+        run: |
+          echo "${{secrets.GOOD_SSH_KEY}}" >>  ~/good.ssh
+          echo "${{secrets.BAD_SSH_KEY}}" >> ~/bad.ssh
+          chmod 600 ~/good.ssh ~/bad.ssh
+
+      - name: Run Tests
+        working-directory: tests/
+        run: go test ./...
