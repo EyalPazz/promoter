@@ -15,9 +15,9 @@ func Extend(rootCmd *cobra.Command) error {
 	GetServicesCmd.Flags().String("project", "", "Project name")
 	GetServicesCmd.Flags().String("service", "", "Service name (required)")
 	GetServicesCmd.Flags().String("env", "", "Environment name (required)")
-    if err := GetServicesCmd.MarkFlagRequired("env"); err != nil {
-        return err
-    }
+	if err := GetServicesCmd.MarkFlagRequired("env"); err != nil {
+		return err
+	}
 
 	rootCmd.AddCommand(RevertProjectCmd)
 
@@ -26,14 +26,14 @@ func Extend(rootCmd *cobra.Command) error {
 	RevertProjectCmd.Flags().String("env", "", "Environment name (required)")
 	RevertProjectCmd.Flags().Int("since", 7, "Time interval to get revisions from (in days, defaults to 7)")
 
-    if err := RevertProjectCmd.MarkFlagRequired("env"); err != nil {
-        return err
-    }
+	if err := RevertProjectCmd.MarkFlagRequired("env"); err != nil {
+		return err
+	}
 
 	rootCmd.AddCommand(GetProfileCmd)
 	GetProfileCmd.Flags().Bool("all", false, "return all profile names")
 
-    return nil
+	return nil
 
 }
 

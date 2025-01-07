@@ -42,9 +42,9 @@ var (
 
 // Execute executes the root command.
 func Execute() error {
-    if err := Extend(rootCmd); err != nil {
-        return err
-    }
+	if err := Extend(rootCmd); err != nil {
+		return err
+	}
 
 	return rootCmd.Execute()
 }
