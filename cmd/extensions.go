@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func Extend(rootCmd *cobra.Command) {
+func Extend(rootCmd *cobra.Command) error {
 
 	rootCmd.AddCommand(RefreshManifestRepoCmd)
 
@@ -15,7 +15,9 @@ func Extend(rootCmd *cobra.Command) {
 	GetServicesCmd.Flags().String("project", "", "Project name")
 	GetServicesCmd.Flags().String("service", "", "Service name (required)")
 	GetServicesCmd.Flags().String("env", "", "Environment name (required)")
-	GetServicesCmd.MarkFlagRequired("env")
+    if err := GetServicesCmd.MarkFlagRequired("env"); err != nil {
+        return err
+    }
 
 	rootCmd.AddCommand(RevertProjectCmd)
 
@@ -24,10 +26,14 @@ func Extend(rootCmd *cobra.Command) {
 	RevertProjectCmd.Flags().String("env", "", "Environment name (required)")
 	RevertProjectCmd.Flags().Int("since", 7, "Time interval to get revisions from (in days, defaults to 7)")
 
-	RevertProjectCmd.MarkFlagRequired("env")
+    if err := RevertProjectCmd.MarkFlagRequired("env"); err != nil {
+        return err
+    }
 
 	rootCmd.AddCommand(GetProfileCmd)
 	GetProfileCmd.Flags().Bool("all", false, "return all profile names")
+
+    return nil
 
 }
 

@@ -42,7 +42,10 @@ var (
 
 // Execute executes the root command.
 func Execute() error {
-	Extend(rootCmd)
+    if err := Extend(rootCmd); err != nil {
+        return err
+    }
+
 	return rootCmd.Execute()
 }
 
