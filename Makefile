@@ -1,5 +1,5 @@
 INSTALL_PATH = /usr/local/bin/promoter
-VERSION ?= v0.7.0
+VERSION ?= v0.7.1
 LDFLAGS = -ldflags="-X 'promoter/cmd.Version=${VERSION}'"
 
 install:
