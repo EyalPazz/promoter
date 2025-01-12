@@ -42,7 +42,7 @@ func firstNonEmpty(values ...string) string {
 	return ""
 }
 
-func GetConfig() (*types.Config,error ){
+func GetConfig() (*types.Config, error) {
 
 	config, ok := viper.Get("config").(types.Config)
 
@@ -50,5 +50,5 @@ func GetConfig() (*types.Config,error ){
 		return nil, fmt.Errorf("error: config structure is invalid")
 	}
 
-    return &config, nil
+	return &config, nil
 }

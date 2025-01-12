@@ -12,10 +12,10 @@ func GetProfile(cmd *cobra.Command) {
 	profile, _ := cmd.Flags().GetString("profile")
 	all, _ := cmd.Flags().GetBool("all")
 
-    config, err := utils.GetConfig()
-    if err != nil {
+	config, err := utils.GetConfig()
+	if err != nil {
 		fmt.Println(err)
-    }
+	}
 
 	fmt.Printf("Active Profile is: %s \n", profile)
 	fmt.Printf("Project Name: %s \n", config.Profiles[profile].ProjectName)

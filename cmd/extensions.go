@@ -33,7 +33,7 @@ func Extend(rootCmd *cobra.Command) error {
 	rootCmd.AddCommand(GetProfileCmd)
 	GetProfileCmd.Flags().Bool("all", false, "return all profile names")
 
-    GetProfileCmd.AddCommand(AddProfileCmd)
+	GetProfileCmd.AddCommand(AddProfileCmd)
 
 	return nil
 
