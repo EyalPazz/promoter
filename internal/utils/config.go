@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"promoter/internal/types"
 
 	"github.com/spf13/viper"
 )
@@ -39,4 +40,15 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
+}
+
+func GetConfig() (*types.Config,error ){
+
+	config, ok := viper.Get("config").(types.Config)
+
+	if !ok {
+		return nil, fmt.Errorf("error: config structure is invalid")
+	}
+
+    return &config, nil
 }
