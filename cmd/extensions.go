@@ -33,6 +33,8 @@ func Extend(rootCmd *cobra.Command) error {
 	rootCmd.AddCommand(GetProfileCmd)
 	GetProfileCmd.Flags().Bool("all", false, "return all profile names")
 
+    GetProfileCmd.AddCommand(AddProfileCmd)
+
 	return nil
 
 }
@@ -70,5 +72,14 @@ var GetProfileCmd = &cobra.Command{
 	Long:  "Get Active (Or all services)",
 	Run: func(cmd *cobra.Command, args []string) {
 		commands.GetProfile(cmd)
+	},
+}
+
+var AddProfileCmd = &cobra.Command{
+	Use:   "add",
+	Short: "Add a config profile",
+	Long:  "Add a config profile",
+	Run: func(cmd *cobra.Command, args []string) {
+		commands.AddProfile(cmd)
 	},
 }
