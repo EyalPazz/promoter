@@ -3,6 +3,7 @@ package commands
 import (
 	"context"
 	"fmt"
+	"promoter/internal/consts"
 	factories "promoter/internal/factories/registry"
 	"promoter/internal/manipulations"
 	"promoter/internal/types"
@@ -13,8 +14,8 @@ import (
 )
 
 func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
-	passphrase, _ := cmd.Flags().GetBool("passphrase")
-	interactive, _ := cmd.Flags().GetBool("interactive")
+	passphrase, _ := cmd.Flags().GetBool(consts.Passphrase)
+	interactive, _ := cmd.Flags().GetBool(consts.Interactive)
 
 	var err error
 
@@ -35,8 +36,8 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 		return
 	}
 
-	if tag != "" && len(serviceList) > 1 {
-		fmt.Println("Error: Image Tag Flag Only Supported With One Service")
+	if tag != consts.EmptyString && len(serviceList) > 1 {
+		fmt.Println(consts.ImageTagFlagNotSupported)
 		return
 	}
 
@@ -49,7 +50,7 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 		if err := processService(ctx, project, service, env, tag, region, &changeLog, interactive); err != nil {
 			fmt.Println(err)
 			if len(changeLog) > 0 {
-				fmt.Println("Reverting Changes...")
+				fmt.Println(consts.RevertingChanges)
 				if err = manipulations.DiscardChanges(); err != nil {
 					fmt.Println(err)
 				}
@@ -60,7 +61,7 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 	}
 
 	if len(changeLog) == 0 {
-		fmt.Println("Nothing To Promote")
+		fmt.Println(consts.NothingToPromote)
 		return
 	}
 
@@ -71,20 +72,20 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 		return
 	}
 
-	fmt.Println("Success!")
+	fmt.Println(consts.Success)
 }
 
 func getServices(serviceStr, project, env string) ([]string, error) {
 	var serviceList []string
 	var err error
 
-	if serviceStr == "" {
+	if serviceStr == consts.EmptyString {
 		serviceList, err = utils.GetServicesNames(project, env)
 		if err != nil {
-			return nil, fmt.Errorf("error retrieving service names: %v", err)
+			return nil, fmt.Errorf(consts.ErrorRetrievingServiceNames, err)
 		}
 	} else {
-		serviceList = strings.Split(serviceStr, ",")
+		serviceList = strings.Split(serviceStr, consts.Comma)
 	}
 
 	return serviceList, nil
@@ -97,14 +98,14 @@ func processService(ctx context.Context, project, service, env, tag, region stri
 	}
 
 	registryFactory := &factories.RegistryFactory{}
-	newTag := ""
+	newTag := consts.EmptyString
 
-	ecrClient, err := registryFactory.InitializeRegistry(ctx, "ecr", region)
+	ecrClient, err := registryFactory.InitializeRegistry(ctx, consts.ECR, region)
 	if err != nil {
 		return err
 	}
 
-	if tag != "" {
+	if tag != consts.EmptyString {
 		if err := ecrClient.ImageExists(ctx, repoName, tag); err != nil {
 			return err
 		}

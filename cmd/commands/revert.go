@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"promoter/internal/consts"
 	"promoter/internal/manipulations"
 	"promoter/internal/utils"
 
@@ -12,28 +13,28 @@ import (
 )
 
 func RevertProject(cmd *cobra.Command) {
-	env, _ := cmd.Flags().GetString("env")
-	passphrase, _ := cmd.Flags().GetBool("passphrase")
-	project, _ := cmd.Flags().GetString("project")
-	since, _ := cmd.Flags().GetInt("since")
+	env, _ := cmd.Flags().GetString(consts.Env)
+	passphrase, _ := cmd.Flags().GetBool(consts.Passphrase)
+	project, _ := cmd.Flags().GetString(consts.Project)
+	since, _ := cmd.Flags().GetInt(consts.Since)
 
-	project, _, err := utils.ValidateProjectAttributes(project, "")
+	project, _, err := utils.ValidateProjectAttributes(project, consts.EmptyString)
 
-	if project == "" {
+	if project == consts.EmptyString {
 		fmt.Print(err)
 		return
 	}
 
 	revs, err := utils.GetLatestRevisions(project, env, since)
 	if err != nil {
-		fmt.Println("Error Getting Previous Revisions: ", err)
+		fmt.Printf(consts.ErrorGettingPreviousRevisions, err)
 		return
 	}
 
 	commits := map[string]*object.Commit{}
 
 	if len(revs) == 0 {
-		fmt.Println("No changes recorded in given interval")
+		fmt.Println(consts.NoChangesRecorded)
 		return
 	}
 
@@ -44,7 +45,7 @@ func RevertProject(cmd *cobra.Command) {
 	var selected string
 
 	prompt := &survey.Select{
-		Message: "Select a revision to revert to",
+		Message: consts.SelectRevision,
 		Options: maps.Keys(commits),
 	}
 
@@ -70,10 +71,10 @@ func RevertProject(cmd *cobra.Command) {
 		return
 	}
 
-	if err = manipulations.HandleRepoActions(fmt.Sprintf("Reverting %s(%s) to %s", project, env, selected), passphrase); err != nil {
+	if err = manipulations.HandleRepoActions(fmt.Sprintf(consts.RevertingTo, project, env, selected), passphrase); err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	fmt.Println("Success!")
+	fmt.Println(consts.Success)
 }

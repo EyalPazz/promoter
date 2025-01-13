@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"promoter/internal/consts"
 	"promoter/internal/utils"
 
 	"github.com/spf13/cobra"
@@ -9,22 +10,22 @@ import (
 
 func GetProfile(cmd *cobra.Command) {
 
-	profile, _ := cmd.Flags().GetString("profile")
-	all, _ := cmd.Flags().GetBool("all")
+	profile, _ := cmd.Flags().GetString(consts.Profile)
+	all, _ := cmd.Flags().GetBool(consts.All)
 
 	config, err := utils.GetConfig()
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	fmt.Printf("Active Profile is: %s \n", profile)
-	fmt.Printf("Project Name: %s \n", config.Profiles[profile].ProjectName)
-	fmt.Printf("Region: %s \n", config.Profiles[profile].Region)
+	fmt.Printf(consts.ActiveProfileIs, profile)
+	fmt.Printf(consts.ProjectNameP+consts.PlaceholderNewline, config.Profiles[profile].ProjectName)
+	fmt.Printf(consts.RegionP+consts.PlaceholderNewline, config.Profiles[profile].Region)
 
 	if all {
-		fmt.Println("\nOther Profile Names:")
+		fmt.Println(consts.OtherProfileNames)
 		for name := range config.Profiles {
-			fmt.Printf("* %s \n", name)
+			fmt.Printf(consts.Asterisk+consts.PlaceholderNewline, name)
 		}
 	}
 }

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"promoter/cmd/commands"
+	"promoter/internal/consts"
 
 	"github.com/spf13/cobra"
 )
@@ -12,26 +13,27 @@ func Extend(rootCmd *cobra.Command) error {
 
 	rootCmd.AddCommand(GetServicesCmd)
 
-	GetServicesCmd.Flags().String("project", "", "Project name")
-	GetServicesCmd.Flags().String("service", "", "Service name (required)")
-	GetServicesCmd.Flags().String("env", "", "Environment name (required)")
-	if err := GetServicesCmd.MarkFlagRequired("env"); err != nil {
+	GetServicesCmd.Flags().String(consts.Project, consts.EmptyString, consts.ProjectFDesc)
+	GetServicesCmd.Flags().String(consts.Service, consts.EmptyString, consts.ServiceFDesc)
+	GetServicesCmd.Flags().String(consts.Env, consts.EmptyString, consts.EnvFDesc)
+
+	if err := GetServicesCmd.MarkFlagRequired(consts.Env); err != nil {
 		return err
 	}
 
 	rootCmd.AddCommand(RevertProjectCmd)
 
-	RevertProjectCmd.Flags().String("project", "", "Project name")
-	RevertProjectCmd.Flags().String("service", "", "Service name (required)")
-	RevertProjectCmd.Flags().String("env", "", "Environment name (required)")
-	RevertProjectCmd.Flags().Int("since", 7, "Time interval to get revisions from (in days, defaults to 7)")
+	RevertProjectCmd.Flags().String(consts.Project, consts.EmptyString, consts.ProjectFDesc)
+	RevertProjectCmd.Flags().String(consts.Service, consts.EmptyString, consts.ServiceFDesc)
+	RevertProjectCmd.Flags().String(consts.Env, consts.EmptyString, consts.EnvFDesc)
+	RevertProjectCmd.Flags().Int(consts.Since, 7, consts.SinceFDesc)
 
-	if err := RevertProjectCmd.MarkFlagRequired("env"); err != nil {
+	if err := RevertProjectCmd.MarkFlagRequired(consts.Env); err != nil {
 		return err
 	}
 
 	rootCmd.AddCommand(GetProfileCmd)
-	GetProfileCmd.Flags().Bool("all", false, "return all profile names")
+	GetProfileCmd.Flags().Bool(consts.All, false, consts.AllFDesc)
 
 	GetProfileCmd.AddCommand(AddProfileCmd)
 
@@ -40,45 +42,45 @@ func Extend(rootCmd *cobra.Command) error {
 }
 
 var RefreshManifestRepoCmd = &cobra.Command{
-	Use:   "refresh-manifest",
-	Short: "Refresh The Manifest Repo",
-	Long:  "Refresh The Manifest Repo",
+	Use:   consts.RefreshManifestCmd,
+	Short: consts.RefreshManifestShort,
+	Long:  consts.RefreshManifestLong,
 	Run: func(cmd *cobra.Command, args []string) {
 		commands.RefreshManifestRepoCmd(cmd)
 	},
 }
 
 var RevertProjectCmd = &cobra.Command{
-	Use:   "revert",
-	Short: "Revert a service to a previous version",
-	Long:  "Refresh The Manifest Repo",
+	Use:   consts.RevertProjectCmd,
+	Short: consts.RevertProjectShort,
+	Long:  consts.RevertProjectLong,
 	Run: func(cmd *cobra.Command, args []string) {
 		commands.RevertProject(cmd)
 	},
 }
 
 var GetServicesCmd = &cobra.Command{
-	Use:   "get-services",
-	Short: "Get All Services in a certain project",
-	Long:  "Get All Services in a certain project",
+	Use:   consts.GetServicesCmd,
+	Short: consts.GetServicesShort,
+	Long:  consts.GetServicesLong,
 	Run: func(cmd *cobra.Command, args []string) {
 		commands.GetServicesCmd(cmd)
 	},
 }
 
 var GetProfileCmd = &cobra.Command{
-	Use:   "profile",
-	Short: "Get Active (Or all services)",
-	Long:  "Get Active (Or all services)",
+	Use:   consts.GetProfileCmd,
+	Short: consts.GetProfileShort,
+	Long:  consts.GetProfileLong,
 	Run: func(cmd *cobra.Command, args []string) {
 		commands.GetProfile(cmd)
 	},
 }
 
 var AddProfileCmd = &cobra.Command{
-	Use:   "add",
-	Short: "Add a config profile",
-	Long:  "Add a config profile",
+	Use:   consts.AddProfileCmd,
+	Short: consts.AddProfileShort,
+	Long:  consts.AddProfileLong,
 	Run: func(cmd *cobra.Command, args []string) {
 		commands.AddProfile(cmd)
 	},

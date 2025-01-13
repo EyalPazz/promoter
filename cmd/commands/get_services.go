@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"promoter/internal/consts"
 	"promoter/internal/utils"
 
 	"github.com/spf13/cobra"
@@ -9,9 +10,9 @@ import (
 
 func GetServicesCmd(cmd *cobra.Command) {
 
-	env, _ := cmd.Flags().GetString("env")
-	project, _ := cmd.Flags().GetString("project")
-	passphrase, _ := cmd.Flags().GetBool("passphrase")
+	env, _ := cmd.Flags().GetString(consts.Env)
+	project, _ := cmd.Flags().GetString(consts.Project)
+	passphrase, _ := cmd.Flags().GetBool(consts.Passphrase)
 
 	project, _, err := utils.ValidateProjectAttributes(project, "")
 
@@ -25,7 +26,7 @@ func GetServicesCmd(cmd *cobra.Command) {
 		return
 	}
 
-	serviceAttributes, err := utils.GetServicesFields(project, env, "name", "type", "imageTag")
+	serviceAttributes, err := utils.GetServicesFields(project, env, consts.Name, consts.Type, consts.ImageTag)
 	if err != nil {
 		fmt.Print(err)
 		return
@@ -33,6 +34,6 @@ func GetServicesCmd(cmd *cobra.Command) {
 
 	for _, atts := range serviceAttributes {
 		// TODO: Assert Types Before Print
-		fmt.Printf("* %s-%s : %s \n", atts["name"].(string), atts["type"].(string), atts["imageTag"].(string))
+		fmt.Printf("* %s-%s : %s \n", atts[consts.Name].(string), atts[consts.Type].(string), atts[consts.ImageTag].(string))
 	}
 }

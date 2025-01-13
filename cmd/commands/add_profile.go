@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+	"promoter/internal/consts"
 	"promoter/internal/types"
 	"promoter/internal/utils"
 
@@ -13,9 +14,9 @@ import (
 func AddProfile(cmd *cobra.Command) {
 	var profileName string
 	if err := survey.AskOne(&survey.Input{
-		Message: "Enter the profile name:",
+		Message: consts.EnterProfileName,
 	}, &profileName, survey.WithValidator(survey.Required)); err != nil {
-		fmt.Printf("error: failed to get profile name: %v", err)
+		fmt.Printf(consts.FailedToGetProfileName, err)
 		return
 	}
 
@@ -30,13 +31,13 @@ func AddProfile(cmd *cobra.Command) {
 		if profile == profileName {
 			var overwrite bool
 			if err := survey.AskOne(&survey.Confirm{
-				Message: fmt.Sprintf("Profile '%s' already exists. Do you want to overwrite it?", profileName),
+				Message: fmt.Sprintf(consts.OverwriteProfile, profileName),
 				Default: false,
 			}, &overwrite); err != nil {
-				fmt.Printf("Failed to confirm overwrite: %v", err)
+				fmt.Printf(consts.FailedToConfirmOverwrite, err)
 			}
 			if !overwrite {
-				fmt.Println("Operation canceled.")
+				fmt.Println(consts.OperationCanceled)
 				return
 			}
 		}
@@ -45,28 +46,28 @@ func AddProfile(cmd *cobra.Command) {
 	var newProfile types.Profile
 	if err := survey.Ask([]*survey.Question{
 		{
-			Name:     "ProjectName",
-			Prompt:   &survey.Input{Message: "Enter the project name:"},
+			Name:     consts.ProjectNameP,
+			Prompt:   &survey.Input{Message: consts.EnterProjectName},
 			Validate: survey.Required,
 		},
 		{
-			Name:     "Region",
-			Prompt:   &survey.Input{Message: "Enter the region:"},
+			Name:     consts.RegionP,
+			Prompt:   &survey.Input{Message: consts.EnterRegion},
 			Validate: survey.Required,
 		},
 	}, &newProfile); err != nil {
-		fmt.Printf("error: Failed to get profile details: %v", err)
+		fmt.Printf(consts.FailedToGetProfileDetails, err)
 		return
 	}
 
-	viper.Set("config", nil)
-	viper.Set("project-name", nil)
-	viper.Set("region", nil)
+	viper.Set(consts.Config, nil)
+	viper.Set(consts.Region, nil)
+	viper.Set(consts.ProjectName, nil)
 
-	viper.Set(profileName+".project-name", newProfile.ProjectName)
-	viper.Set(profileName+".region", newProfile.Region)
+	viper.Set(profileName+consts.Dot+consts.ProjectName, newProfile.ProjectName)
+	viper.Set(profileName+consts.Dot+consts.Region, newProfile.Region)
 	if err := viper.WriteConfig(); err != nil {
-		fmt.Printf("Failed to write config: %v", err)
+		fmt.Printf(consts.FailedToWriteConfig, err)
 	}
 
 	fmt.Printf("Profile '%s' saved successfully!\n", profileName)
