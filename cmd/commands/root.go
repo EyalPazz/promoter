@@ -98,7 +98,7 @@ func processService(ctx context.Context, project, service, env, tag, region stri
 	}
 
 	registryFactory := &factories.RegistryFactory{}
-	newTag := consts.EmptyString
+	newTag := ""
 
 	ecrClient, err := registryFactory.InitializeRegistry(ctx, consts.ECR, region)
 	if err != nil {
