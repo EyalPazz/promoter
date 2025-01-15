@@ -15,15 +15,15 @@ import (
 )
 
 const (
-	DEFAULT_PROMOTER_DIR = "/promoter-data/"
+	DEFAULT_PROMOTER_DIR = "/promoter/"
 )
 
 func GetRepoPath() (string, error) {
-	homeDir, err := os.UserHomeDir()
+	baseDir, err := os.UserCacheDir()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to get user cache directory: %w", err)
 	}
-	return homeDir + DEFAULT_PROMOTER_DIR + "manifest", nil
+	return baseDir + DEFAULT_PROMOTER_DIR, nil
 }
 
 func GetRepo() (*git.Repository, error) {
