@@ -5,13 +5,25 @@ Promoter facilitates easy promotion between environments using GitOps and Helm. 
 ## Installation
 
 ```bash
-curl -sL https://github.com/EyalPazz/promoter/raw/main/install.sh | bash
+curl -sL https://github.com/EyalPazz/promoter/raw/main/install.sh | sudo bash
 ```
 
-or
+Or, from the repository itself:
 
 ```bash
-make install
+sudo make install
+```
+
+By default, this installs the binary into `/usr/local/bin`, which requires `sudo`. If you want to use a different prefix, you can set the `PREFIX` environment variable (the default is `/usr/local`, as `bin` is appended to the prefix):
+
+```bash
+curl -sL https://github.com/EyalPazz/promoter/raw/main/install.sh | PREFIX=$HOME/.local bash
+```
+
+Or, from the repository itself:
+
+```bash
+PREFIX=$HOME/.local make install
 ```
 
 ## Usage
