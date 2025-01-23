@@ -35,8 +35,12 @@ esac
 # Define the download URL based on platform and architecture
 URL="https://github.com/EyalPazz/promoter/releases/download/${VERSION}/promoter_${PLATFORM}_${ARCH}"
 
+if [ -z "$PREFIX" ]; then
+  PREFIX="/usr/local"
+fi
+
 # Define the install path
-INSTALL_PATH="/usr/local/bin/promoter"
+INSTALL_PATH="$PREFIX/bin/promoter"
 
 # Download the binary
 curl -L $URL -o promoter
@@ -45,6 +49,6 @@ curl -L $URL -o promoter
 chmod +x promoter
 
 # Move it to the install path
-sudo mv promoter $INSTALL_PATH
+mv promoter "$INSTALL_PATH" || exit 1
 
 echo "promoter installed successfully!"
