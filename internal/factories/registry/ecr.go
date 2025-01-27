@@ -26,11 +26,16 @@ func NewECRRegistryClient(ctx context.Context, region string) (*ECRRegistryClien
 func (e *ECRRegistryClient) GetLatestImage(ctx context.Context, repositoryName string) (*types.ImageDetail, error) {
 	input := &ecr.DescribeImagesInput{
 		RepositoryName: aws.String(repositoryName),
+		MaxResults:     aws.Int32(1000),
 	}
 
 	result, err := e.client.DescribeImages(ctx, input)
 	if err != nil {
 		return nil, fmt.Errorf("error describing images: %w", err)
+	}
+
+	if result.NextToken != nil {
+		fmt.Println("warning: you have more then 1000 images in your repository, this may impact promoter performence")
 	}
 
 	if len(result.ImageDetails) == 0 {
