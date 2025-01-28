@@ -34,6 +34,7 @@ func (e *ECRRegistryClient) GetLatestImage(ctx context.Context, repositoryName s
 		return nil, fmt.Errorf("error describing images: %w", err)
 	}
 
+    // TODO: Fetch All?
 	if result.NextToken != nil {
 		fmt.Println("warning: you have more then 1000 images in your repository, this may impact promoter performence")
 	}
