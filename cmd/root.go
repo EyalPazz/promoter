@@ -12,16 +12,14 @@ import (
 )
 
 var (
-	// Used for flags.
-	cfgFile     string
-	project     string
-	services    string
-	env         string
-	tag         string
-	region      string
+
+	// Flags
+	region  string
+	profile string
+
+	// Misc
 	config      types.Config
 	showVersion bool
-	profile     string
 	Version     string = "dev"
 
 	rootCmd = &cobra.Command{
@@ -35,6 +33,11 @@ var (
 			}
 		},
 		Run: func(cmd *cobra.Command, args []string) {
+			project, _ := cmd.Flags().GetString("project")
+			services, _ := cmd.Flags().GetString("services")
+			env, _ := cmd.Flags().GetString("env")
+			tag, _ := cmd.Flags().GetString("tag")
+			region, _ := cmd.Flags().GetString("region")
 			commands.RootCmd(cmd, region, services, tag, project, env)
 		},
 	}
@@ -52,18 +55,23 @@ func Execute() error {
 func init() {
 	cobra.OnInitialize(initConfig)
 
+	// Persistent Flags
+	rootCmd.PersistentFlags().Bool("passphrase", false, "Whether or not to prompt for ssh key passphrase")
+
+	rootCmd.PersistentFlags().BoolP("interactive", "i", false, "Ask for confirmation in each change")
+
 	rootCmd.PersistentFlags().BoolVarP(&showVersion, "version", "v", false, "Show version number")
 
 	rootCmd.PersistentFlags().StringVarP(&profile, "profile", "p", "default", "Configuration profile to use")
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.promoter.yaml)")
-	rootCmd.PersistentFlags().Bool("passphrase", false, "Whether or not to prompt for ssh key passphrase")
-	rootCmd.PersistentFlags().BoolP("interactive", "i", false, "Ask for confirmation in each change")
+
+	rootCmd.PersistentFlags().String("services", "", "Services  (separeted by a comma)")
+	rootCmd.PersistentFlags().String("project", "", "Project name (required)")
+
+	// Root CMD Glags
+	rootCmd.Flags().String("tag", "", "Specific image tag to promote (or revert) to (Only Supported With One Service)")
+	rootCmd.Flags().String("env", "", "Environment name (required)")
 
 	rootCmd.Flags().StringVar(&region, "region", "", "AWS Region for repository")
-	rootCmd.Flags().StringVar(&services, "services", "", "Services  (separeted by a comma)")
-	rootCmd.Flags().StringVar(&project, "project", "", "Project name (required)")
-	rootCmd.Flags().StringVar(&env, "env", "", "Environment name (required)")
-	rootCmd.Flags().StringVar(&tag, "tag", "", "Specific image tag to promote (or revert) to (Only Supported With One Service)")
 
 	err := rootCmd.MarkFlagRequired("env")
 	if err != nil {

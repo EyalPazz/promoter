@@ -13,8 +13,6 @@ func Extend(rootCmd *cobra.Command) error {
 
 	rootCmd.AddCommand(GetServicesCmd)
 
-	GetServicesCmd.Flags().String(consts.Project, consts.EmptyString, consts.ProjectFDesc)
-	GetServicesCmd.Flags().String(consts.Service, consts.EmptyString, consts.ServiceFDesc)
 	GetServicesCmd.Flags().String(consts.Env, consts.EmptyString, consts.EnvFDesc)
 
 	if err := GetServicesCmd.MarkFlagRequired(consts.Env); err != nil {
@@ -23,8 +21,6 @@ func Extend(rootCmd *cobra.Command) error {
 
 	rootCmd.AddCommand(RevertProjectCmd)
 
-	RevertProjectCmd.Flags().String(consts.Project, consts.EmptyString, consts.ProjectFDesc)
-	RevertProjectCmd.Flags().String(consts.Service, consts.EmptyString, consts.ServiceFDesc)
 	RevertProjectCmd.Flags().String(consts.Env, consts.EmptyString, consts.EnvFDesc)
 	RevertProjectCmd.Flags().Int(consts.Since, 7, consts.SinceFDesc)
 
