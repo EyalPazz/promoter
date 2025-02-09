@@ -8,7 +8,7 @@ import (
 
 type RegistryFactory struct{}
 
-func (f *RegistryFactory) InitializeRegistry(ctx context.Context, registryType, region string) (types.ContainerRegistry, error) {
+func (f *RegistryFactory) InitializeRegistry(ctx context.Context, registryType, region string) (types.IContainerRegistry, error) {
 	switch registryType {
 	case "ecr":
 		client, err := NewECRRegistryClient(ctx, region)
