@@ -39,13 +39,23 @@ func GetRepo() (*git.Repository, error) {
 	return repo, nil
 }
 
-func ComposeCommitMsg(changes *[]types.ServiceChanges, env, project string) string {
-	msg := fmt.Sprintf("promotion(%s): %s \n", env, project)
+func ComposeChangeBranch(project,env string) string {
+    return fmt.Sprintf("%s-%s-%s", project,env, time.Now().Format("01-02-15-04"))
+}
+
+func ComposeCommitTitle(changes *[]types.ServiceChanges, env, project string) string {
+	return fmt.Sprintf("promotion(%s): %s \n", env, project)
+}
+
+func ComposeCommitBody(changes *[]types.ServiceChanges, env, project string) string {
+    var msg string;
 	for _, change := range *changes {
 		msg += fmt.Sprintf("changed %s to %s \n", change.Name, change.NewTag)
 	}
 	return msg
 }
+
+
 
 func GetLatestRevisions(project, env string, dayInterval int) ([]*object.Commit, error) {
 	repo, err := GetRepo()

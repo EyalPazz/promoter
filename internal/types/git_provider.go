@@ -1,5 +1,5 @@
 package types
 
 type IGitProvider interface {
-    CreatePR() error
+    CreatePR(head, body, title string) error
 }

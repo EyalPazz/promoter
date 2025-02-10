@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"promoter/internal/consts"
+	"promoter/internal/factories/gitprovider"
 	factories "promoter/internal/factories/registry"
 	"promoter/internal/manipulations"
 	"promoter/internal/types"
@@ -67,23 +68,33 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 		return
 	}
 
-	commitMsg := utils.ComposeCommitMsg(&changeLog, env, project)
+	commitTitle := utils.ComposeCommitTitle(&changeLog, env, project)
+	commitBody := utils.ComposeCommitBody(&changeLog, env, project)
 
-    var workflow types.IGitFlow;
 
     config, _ := utils.GetConfig()
 
+    var workflow types.IGitFlow
+
+    base_workflow := &git.BaseGitFlow{
+        CommitMsg: commitTitle + commitBody,
+        Passphrase: passphrase,
+    } 
+
     if config.PullRequests.Enabled {
-       workflow = &git.BaseGitFlow{
-            CommitMsg: commitMsg,
-            Passphrase: passphrase,
-        } 
+        provider := gitprovider.GitProvider{}
+        github := provider.GetProvider("github")
+        workflow = &git.PRGitWorkflow{
+            BaseGitFlow: *base_workflow,
+            GitProvider: github,
+            Title: commitTitle,
+            Body: commitBody,
+            ChangeBranch: utils.ComposeChangeBranch(project, env),
+        }
     } else {
-       workflow = &git.BaseGitFlow{
-            CommitMsg: commitMsg,
-            Passphrase: passphrase,
-        } 
-    }
+        workflow = base_workflow
+    }   
+    
 
 	if err := workflow.Execute(); err != nil {
 		fmt.Print(err)

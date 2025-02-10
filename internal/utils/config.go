@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"os"
 	"promoter/internal/types"
 
 	"github.com/spf13/viper"
@@ -51,4 +52,12 @@ func GetConfig() (*types.Config, error) {
 	}
 
 	return &config, nil
+}
+
+func GetGitProviderToken() string {
+    token := os.Getenv("GIT_PROVIDER_TOKEN")
+    if token == "" {
+        fmt.Println("warning: GIT_PROVIDER_TOKEN is undefined")
+    }
+    return token
 }

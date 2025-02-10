@@ -17,10 +17,6 @@ type BaseGitFlow struct {
 
 }
 
-type ExtendedGitFlow struct {
-    BaseGitFlow
-}
-
 func (gf *BaseGitFlow) Execute() error{
     worktree, err := gf.Checkout()
     if err != nil {
