@@ -53,7 +53,7 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 			fmt.Println(err)
 			if len(changeLog) > 0 {
 				fmt.Println(consts.RevertingChanges)
-                workflow := git.DiscardGitFlow{ BaseGitFlow: git.BaseGitFlow{}}
+				workflow := git.DiscardGitFlow{BaseGitFlow: git.BaseGitFlow{}}
 				if err = workflow.Execute(); err != nil {
 					fmt.Println(err)
 				}
@@ -71,28 +71,26 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 	commitTitle := utils.ComposeCommitTitle(&changeLog, env, project)
 	commitBody := utils.ComposeCommitBody(&changeLog, env, project)
 
+	var workflow types.IGitFlow
 
-    var workflow types.IGitFlow
+	base_workflow := &git.BaseGitFlow{
+		CommitMsg:  commitTitle + commitBody,
+		Passphrase: passphrase,
+	}
 
-    base_workflow := &git.BaseGitFlow{
-        CommitMsg: commitTitle + commitBody,
-        Passphrase: passphrase,
-    } 
-
-    if utils.ShouldCreatePR(env) { 
-        provider := gitprovider.GitProvider{}
-        github := provider.GetProvider("github")
-        workflow = &git.PRGitWorkflow{
-            BaseGitFlow: *base_workflow,
-            GitProvider: github,
-            Title: commitTitle,
-            Body: commitBody,
-            ChangeBranch: utils.ComposeChangeBranch(project, env),
-        }
-    } else {
-        workflow = base_workflow
-    }   
-    
+	if utils.ShouldCreatePR(env) {
+		provider := gitprovider.GitProvider{}
+		github := provider.GetProvider("github")
+		workflow = &git.PRGitWorkflow{
+			BaseGitFlow:  *base_workflow,
+			GitProvider:  github,
+			Title:        commitTitle,
+			Body:         commitBody,
+			ChangeBranch: utils.ComposeChangeBranch(project, env),
+		}
+	} else {
+		workflow = base_workflow
+	}
 
 	if err := workflow.Execute(); err != nil {
 		fmt.Print(err)

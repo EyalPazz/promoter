@@ -39,8 +39,8 @@ func GetRepo() (*git.Repository, error) {
 	return repo, nil
 }
 
-func ComposeChangeBranch(project,env string) string {
-    return fmt.Sprintf("%s-%s-%s", project,env, time.Now().Format("01-02-15-04"))
+func ComposeChangeBranch(project, env string) string {
+	return fmt.Sprintf("%s-%s-%s", project, env, time.Now().Format("01-02-15-04"))
 }
 
 func ComposeCommitTitle(changes *[]types.ServiceChanges, env, project string) string {
@@ -48,14 +48,12 @@ func ComposeCommitTitle(changes *[]types.ServiceChanges, env, project string) st
 }
 
 func ComposeCommitBody(changes *[]types.ServiceChanges, env, project string) string {
-    var msg string;
+	var msg string
 	for _, change := range *changes {
 		msg += fmt.Sprintf("changed %s to %s \n", change.Name, change.NewTag)
 	}
 	return msg
 }
-
-
 
 func GetLatestRevisions(project, env string, dayInterval int) ([]*object.Commit, error) {
 	repo, err := GetRepo()

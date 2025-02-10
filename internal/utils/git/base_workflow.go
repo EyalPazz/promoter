@@ -12,30 +12,29 @@ import (
 )
 
 type BaseGitFlow struct {
-    CommitMsg string
-    Passphrase bool
-
+	CommitMsg  string
+	Passphrase bool
 }
 
-func (gf *BaseGitFlow) Execute() error{
-    worktree, err := gf.Checkout()
-    if err != nil {
-        return err 
-    }
+func (gf *BaseGitFlow) Execute() error {
+	worktree, err := gf.Checkout()
+	if err != nil {
+		return err
+	}
 
-    if err := gf.Add(worktree); err != nil {
-        return err
-    }
+	if err := gf.Add(worktree); err != nil {
+		return err
+	}
 
-    if err := gf.Commit(worktree, gf.CommitMsg); err != nil {
-        return err
-    }
+	if err := gf.Commit(worktree, gf.CommitMsg); err != nil {
+		return err
+	}
 
-    if err := gf.Push(gf.Passphrase) ; err != nil {
-        return err
-    }
+	if err := gf.Push(gf.Passphrase); err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
 func (gf *BaseGitFlow) Checkout() (*git.Worktree, error) {
@@ -49,7 +48,7 @@ func (gf *BaseGitFlow) Checkout() (*git.Worktree, error) {
 		return nil, err
 	}
 
-    return worktree, nil
+	return worktree, nil
 }
 
 func (gf *BaseGitFlow) Add(worktree *git.Worktree) error {
@@ -57,7 +56,7 @@ func (gf *BaseGitFlow) Add(worktree *git.Worktree) error {
 		return err
 	}
 
-    return nil
+	return nil
 }
 
 func (gf *BaseGitFlow) Commit(worktree *git.Worktree, commitMsg string) error {
@@ -79,7 +78,7 @@ func (gf *BaseGitFlow) Commit(worktree *git.Worktree, commitMsg string) error {
 		},
 	})
 
-    return err
+	return err
 }
 
 func (gf *BaseGitFlow) Push(hasPassphrase bool) error {

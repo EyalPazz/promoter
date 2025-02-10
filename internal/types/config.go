@@ -6,7 +6,7 @@ type Config struct {
 	SSHKey           string             `mapstructure:"ssh-key"`
 	ManifestRepo     string             `mapstructure:"manifest-repo"`
 	ManifestRepoRoot string             `mapstructure:"manifest-repo-root"`
-	PullRequests     PullRequests             `mapstructure:"pullRequests"`
+	PullRequests     PullRequests       `mapstructure:"pullRequests"`
 	Profiles         map[string]Profile `mapstructure:",remain"`
 }
 
@@ -16,9 +16,9 @@ type Profile struct {
 }
 
 type PullRequests struct {
-    Enabled bool `mapstructure:"enabled"`
-    BaseBranch string `mapstructure:"base-branch"`
-    Org         string `mapstructure:"org"`
-    RepoName         string `mapstructure:"repo-name"`
-    Envs             []string `mapstructure:"envs"`
+	Enabled    bool     `mapstructure:"enabled"`
+	BaseBranch string   `mapstructure:"base-branch"`
+	Org        string   `mapstructure:"org"`
+	RepoName   string   `mapstructure:"repo-name"`
+	Envs       []string `mapstructure:"envs"`
 }

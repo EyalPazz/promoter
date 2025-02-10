@@ -56,15 +56,15 @@ func GetConfig() (*types.Config, error) {
 }
 
 func GetGitProviderToken() string {
-    token := os.Getenv("GIT_PROVIDER_TOKEN")
-    if token == "" {
-        fmt.Println("warning: GIT_PROVIDER_TOKEN is undefined")
-    }
-    return token
+	token := os.Getenv("GIT_PROVIDER_TOKEN")
+	if token == "" {
+		fmt.Println("warning: GIT_PROVIDER_TOKEN is undefined")
+	}
+	return token
 }
 
 func ShouldCreatePR(env string) bool {
-    config, _ := GetConfig()
-     
-    return config.PullRequests.Enabled && ((config.PullRequests.Envs == nil) || slices.Contains(config.PullRequests.Envs, env))
+	config, _ := GetConfig()
+
+	return config.PullRequests.Enabled && ((config.PullRequests.Envs == nil) || slices.Contains(config.PullRequests.Envs, env))
 }

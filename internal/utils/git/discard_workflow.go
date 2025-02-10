@@ -9,24 +9,24 @@ import (
 )
 
 type DiscardGitFlow struct {
-    BaseGitFlow
+	BaseGitFlow
 }
 
-func (gf *DiscardGitFlow) Execute() error{
-    err := gf.Checkout()
-    if err != nil {
-        return err 
-    }
+func (gf *DiscardGitFlow) Execute() error {
+	err := gf.Checkout()
+	if err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
-func (gf *DiscardGitFlow) Checkout() (error) {
-    worktree, err := gf.BaseGitFlow.Checkout()
+func (gf *DiscardGitFlow) Checkout() error {
+	worktree, err := gf.BaseGitFlow.Checkout()
 
-    if err != nil {
-        return err
-    }
+	if err != nil {
+		return err
+	}
 
 	repo, err := utils.GetRepo()
 	if err != nil {
@@ -56,4 +56,3 @@ func (gf *DiscardGitFlow) Checkout() (error) {
 	fmt.Println("Reverted All Changes")
 	return nil
 }
-

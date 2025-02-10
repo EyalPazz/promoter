@@ -72,23 +72,23 @@ func RevertProject(cmd *cobra.Command) {
 		return
 	}
 
-    var workflow types.IGitFlow;
+	var workflow types.IGitFlow
 
-    config, _ := utils.GetConfig()
+	config, _ := utils.GetConfig()
 
-    commitMsg := fmt.Sprintf(consts.RevertingTo, project, env, selected)
+	commitMsg := fmt.Sprintf(consts.RevertingTo, project, env, selected)
 
-    if config.PullRequests.Enabled {
-       workflow = &git.BaseGitFlow{
-            CommitMsg: commitMsg,
-            Passphrase: passphrase,
-        } 
-    } else {
-       workflow = &git.BaseGitFlow{
-            CommitMsg: commitMsg,
-            Passphrase: passphrase,
-        } 
-    }
+	if config.PullRequests.Enabled {
+		workflow = &git.BaseGitFlow{
+			CommitMsg:  commitMsg,
+			Passphrase: passphrase,
+		}
+	} else {
+		workflow = &git.BaseGitFlow{
+			CommitMsg:  commitMsg,
+			Passphrase: passphrase,
+		}
+	}
 
 	if err := workflow.Execute(); err != nil {
 		fmt.Print(err)
