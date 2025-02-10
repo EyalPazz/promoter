@@ -70,11 +70,19 @@ git-name: <Your Git Name>
 manifest-repo: <Config Files Repo URL>
 ssh-key: <Git SSH Key Path>
 manifest-repo-root: < ** OPTIONAL ** For app of apps repos>
+pullRequests:
+  enabled: boolean (required)
+  org: string
+  base-branch: string
+  repo-name: string
+  envs: list<string> (all envs by default)
 
 default:
   project-name: X
   region: Y
 ```
+
+\*\* In order for the PR's to work, you should have an env variable named `GIT_PROVIDER_TOKEN` that stores your PAT \*\*
 
 You can also add another profile and use --profile with it's name
 
@@ -94,6 +102,6 @@ argo/
 ## To-Do List
 
 - [x] 1: Make Deployment Platform agnostic
-- [ ] 2: Add Tests
-- [ ] 3: Expend to more providers and manifest repo structures
-- [x] 4: Write documentation
+- [x] 2: Write documentation
+- [ ] 3: Add Tests
+- [ ] 4: Expend to more providers and manifest repo structures
