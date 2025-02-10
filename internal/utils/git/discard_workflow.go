@@ -1,4 +1,4 @@
-package manipulations
+package git
 
 import (
 	"fmt"
@@ -8,16 +8,29 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 )
 
-func DiscardChanges() error {
+type DiscardGitFlow struct {
+    BaseGitFlow
+}
+
+func (gf *DiscardGitFlow) Execute() error{
+    err := gf.Checkout()
+    if err != nil {
+        return err 
+    }
+
+    return nil
+}
+
+func (gf *DiscardGitFlow) Checkout() (error) {
+    worktree, err := gf.BaseGitFlow.Checkout()
+
+    if err != nil {
+        return err
+    }
 
 	repo, err := utils.GetRepo()
 	if err != nil {
 		return err
-	}
-
-	worktree, err := repo.Worktree()
-	if err != nil {
-		return fmt.Errorf("failed to get worktree: %v", err)
 	}
 
 	headRef, err := repo.Head()
@@ -43,3 +56,4 @@ func DiscardChanges() error {
 	fmt.Println("Reverted All Changes")
 	return nil
 }
+

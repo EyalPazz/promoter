@@ -52,7 +52,8 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 			fmt.Println(err)
 			if len(changeLog) > 0 {
 				fmt.Println(consts.RevertingChanges)
-				if err = manipulations.DiscardChanges(); err != nil {
+                workflow := git.DiscardGitFlow{ BaseGitFlow: git.BaseGitFlow{}}
+				if err = workflow.Execute(); err != nil {
 					fmt.Println(err)
 				}
 			}
