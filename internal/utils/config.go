@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"promoter/internal/types"
+	"slices"
 
 	"github.com/spf13/viper"
 )
@@ -60,4 +61,10 @@ func GetGitProviderToken() string {
         fmt.Println("warning: GIT_PROVIDER_TOKEN is undefined")
     }
     return token
+}
+
+func ShouldCreatePR(env string) bool {
+    config, _ := GetConfig()
+     
+    return config.PullRequests.Enabled && ((config.PullRequests.Envs == nil) || slices.Contains(config.PullRequests.Envs, env))
 }

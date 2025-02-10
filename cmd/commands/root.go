@@ -72,8 +72,6 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 	commitBody := utils.ComposeCommitBody(&changeLog, env, project)
 
 
-    config, _ := utils.GetConfig()
-
     var workflow types.IGitFlow
 
     base_workflow := &git.BaseGitFlow{
@@ -81,7 +79,7 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
         Passphrase: passphrase,
     } 
 
-    if config.PullRequests.Enabled {
+    if utils.ShouldCreatePR(env) { 
         provider := gitprovider.GitProvider{}
         github := provider.GetProvider("github")
         workflow = &git.PRGitWorkflow{

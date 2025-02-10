@@ -20,4 +20,5 @@ type PullRequests struct {
     BaseBranch string `mapstructure:"base-branch"`
     Org         string `mapstructure:"org"`
     RepoName         string `mapstructure:"repo-name"`
+    Envs             []string `mapstructure:"envs"`
 }
