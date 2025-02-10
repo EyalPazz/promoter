@@ -3,8 +3,9 @@ package commands
 import (
 	"fmt"
 	"promoter/internal/consts"
-	"promoter/internal/manipulations"
+	"promoter/internal/types"
 	"promoter/internal/utils"
+	"promoter/internal/utils/git"
 
 	"github.com/AlecAivazis/survey/v2"
 	"github.com/go-git/go-git/v5/plumbing/object"
@@ -71,8 +72,26 @@ func RevertProject(cmd *cobra.Command) {
 		return
 	}
 
-	if err = manipulations.HandleRepoActions(fmt.Sprintf(consts.RevertingTo, project, env, selected), passphrase); err != nil {
-		fmt.Println(err)
+    var workflow types.IGitFlow;
+
+    config, _ := utils.GetConfig()
+
+    commitMsg := fmt.Sprintf(consts.RevertingTo, project, env, selected)
+
+    if config.PullRequests.Enabled {
+       workflow = &git.BaseGitFlow{
+            CommitMsg: commitMsg,
+            Passphrase: passphrase,
+        } 
+    } else {
+       workflow = &git.BaseGitFlow{
+            CommitMsg: commitMsg,
+            Passphrase: passphrase,
+        } 
+    }
+
+	if err := workflow.Execute(); err != nil {
+		fmt.Print(err)
 		return
 	}
 

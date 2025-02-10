@@ -8,6 +8,7 @@ import (
 	"promoter/internal/manipulations"
 	"promoter/internal/types"
 	"promoter/internal/utils"
+	"promoter/internal/utils/git"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -67,7 +68,23 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 
 	commitMsg := utils.ComposeCommitMsg(&changeLog, env, project)
 
-	if err := manipulations.HandleRepoActions(commitMsg, passphrase); err != nil {
+    var workflow types.IGitFlow;
+
+    config, _ := utils.GetConfig()
+
+    if config.PullRequests.Enabled {
+       workflow = &git.BaseGitFlow{
+            CommitMsg: commitMsg,
+            Passphrase: passphrase,
+        } 
+    } else {
+       workflow = &git.BaseGitFlow{
+            CommitMsg: commitMsg,
+            Passphrase: passphrase,
+        } 
+    }
+
+	if err := workflow.Execute(); err != nil {
 		fmt.Print(err)
 		return
 	}
