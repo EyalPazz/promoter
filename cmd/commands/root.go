@@ -26,22 +26,22 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 		return
 	}
 
-    projectInstance, err := pjct.NewProject(services, env, project)
+	projectInstance, err := pjct.NewProject(services, env, project)
 
-    if err != nil {
+	if err != nil {
 		fmt.Println(err)
 		return
-    }
+	}
 
 	if tag != consts.EmptyString && len(*projectInstance.Services) > 1 {
 		fmt.Println(consts.ImageTagFlagNotSupported)
 		return
 	}
 
-    if err := projectInstance.Process(tag, region, interactive, passphrase); err != nil {
-        fmt.Println(err)
-        return
-    }
+	if err := projectInstance.Process(tag, region, interactive, passphrase); err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	fmt.Println(consts.Success)
 }

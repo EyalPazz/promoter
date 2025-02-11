@@ -13,23 +13,23 @@ import (
 )
 
 type Service struct {
-    project string
-    name string
-    env string
-    config map[string]interface{}
-    projectConfig *utils.Config 
+	project       string
+	name          string
+	env           string
+	config        map[string]interface{}
+	projectConfig *utils.Config
 }
 
 func NewService(project, name, env string, config *utils.Config) (*Service, error) {
 
 	serviceConfig, err := utils.FindService(config, name)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
-    return &Service{
-        project,name,env,serviceConfig,config,
-    }, nil
+	return &Service{
+		project, name, env, serviceConfig, config,
+	}, nil
 }
 
 func (s *Service) Process(ctx context.Context, tag, region string, changeLog *[]types.ServiceChanges, interactive bool) error {
@@ -41,7 +41,7 @@ func (s *Service) Process(ctx context.Context, tag, region string, changeLog *[]
 	registryFactory := &factories.RegistryFactory{}
 	newTag := ""
 
-    // TODO: take type from image names after implementing more registries
+	// TODO: take type from image names after implementing more registries
 	registryClient, err := registryFactory.InitializeRegistry(ctx, consts.ECR, region)
 	if err != nil {
 		return err
@@ -107,7 +107,7 @@ func (s *Service) changeTag(tag string, interactive bool) (bool, error) {
 	}
 
 	s.config[imageTagKey] = tag
-    if err := utils.WriteToProjectFile(s.project, s.env, s.projectConfig); err != nil {
+	if err := utils.WriteToProjectFile(s.project, s.env, s.projectConfig); err != nil {
 		return false, err
 	}
 

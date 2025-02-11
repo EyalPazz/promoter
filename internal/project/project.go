@@ -13,51 +13,51 @@ import (
 )
 
 type Project struct {
-    env string
-    name string
-    Services *[]service.Service
-    ChangeLog *[]types.ServiceChanges
-    Config *utils.Config
+	env       string
+	name      string
+	Services  *[]service.Service
+	ChangeLog *[]types.ServiceChanges
+	Config    *utils.Config
 }
 
-func NewProject(serviceString, env, name string) (*Project, error){
-    serviceList, err := getServices(serviceString, name, env)
+func NewProject(serviceString, env, name string) (*Project, error) {
+	serviceList, err := getServices(serviceString, name, env)
 
-    if err != nil {
-        return nil, err
-    }
+	if err != nil {
+		return nil, err
+	}
 
-    var services []service.Service
+	var services []service.Service
 
-    config, err :=  utils.GetProjectConfig(name, env)
-    if err != nil {
-        return nil, err
-    }
+	config, err := utils.GetProjectConfig(name, env)
+	if err != nil {
+		return nil, err
+	}
 
-    for _, svc := range serviceList {
-        service, err := service.NewService(name, svc, env, config)
-        if err != nil {
-            return nil, err
-        }
-        services = append(services, *service)
-    }
+	for _, svc := range serviceList {
+		service, err := service.NewService(name, svc, env, config)
+		if err != nil {
+			return nil, err
+		}
+		services = append(services, *service)
+	}
 
-    project := Project{
-        env,
-        name,
-        &services,
-        &[]types.ServiceChanges{},
-        config,
-    }
+	project := Project{
+		env,
+		name,
+		&services,
+		&[]types.ServiceChanges{},
+		config,
+	}
 
-    return &project, nil
+	return &project, nil
 }
 
 func (p *Project) Process(tag, region string, interactive, passphrase bool) error {
-    ctx := context.Background()
+	ctx := context.Background()
 
-    for _, service := range *p.Services {
-        if err := service.Process(ctx, tag, region, p.ChangeLog, interactive); err != nil {
+	for _, service := range *p.Services {
+		if err := service.Process(ctx, tag, region, p.ChangeLog, interactive); err != nil {
 			fmt.Println(err)
 			if len(*p.ChangeLog) > 0 {
 				fmt.Println(consts.RevertingChanges)
@@ -66,15 +66,15 @@ func (p *Project) Process(tag, region string, interactive, passphrase bool) erro
 					fmt.Println(err)
 				}
 			}
-            return err
-        }
-    }
+			return err
+		}
+	}
 
-    if len(*p.ChangeLog) == 0 {
-         return fmt.Errorf(consts.NothingToPromote)
-    }
+	if len(*p.ChangeLog) == 0 {
+		return fmt.Errorf(consts.NothingToPromote)
+	}
 
-    return p.executeGitFlow(passphrase)
+	return p.executeGitFlow(passphrase)
 }
 
 func getServices(serviceStr, project, env string) ([]string, error) {
@@ -121,8 +121,8 @@ func (p *Project) executeGitFlow(passphrase bool) error {
 	if err := workflow.Execute(); err != nil {
 		return err
 	}
-    
-    return nil
+
+	return nil
 }
 
 func (p *Project) composeCommitTitle() string {
