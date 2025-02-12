@@ -3,7 +3,7 @@
 # Detect the platform and architecture
 OS=$(uname -s)
 ARCH=$(uname -m)
-VERSION=v0.8.1
+VERSION=v0.9.0
 
 # Map platform and architecture to the correct binary name
 case "$OS" in
