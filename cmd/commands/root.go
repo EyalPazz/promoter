@@ -2,8 +2,8 @@ package commands
 
 import (
 	"fmt"
+	"promoter/internal/commands"
 	"promoter/internal/consts"
-	pjct "promoter/internal/project"
 	"promoter/internal/utils"
 
 	"github.com/spf13/cobra"
@@ -26,7 +26,7 @@ func RootCmd(cmd *cobra.Command, region, services, tag, project, env string) {
 		return
 	}
 
-	projectInstance, err := pjct.NewProject(services, env, project)
+	projectInstance, err := commands.NewProjectPromoter(services, env, project)
 
 	if err != nil {
 		fmt.Println(err)

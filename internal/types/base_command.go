@@ -1,5 +1,5 @@
 package types
 
 type IBaseCommand interface {
-    Execute()
+	Execute(bool, string, string) error
 }

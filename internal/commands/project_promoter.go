@@ -1,10 +1,9 @@
-package project
+package commands
 
 import (
 	"context"
 	"fmt"
 	"promoter/internal/consts"
-	"promoter/internal/factories/gitprovider"
 	"promoter/internal/service"
 	"promoter/internal/types"
 	"promoter/internal/utils"
@@ -12,15 +11,16 @@ import (
 	"strings"
 )
 
-type Project struct {
+type ProjectPromoter struct {
 	env       string
 	name      string
 	Services  *[]service.Service
 	ChangeLog *[]types.ServiceChanges
 	Config    *utils.Config
+	BaseCmd   types.IBaseCommand
 }
 
-func NewProject(serviceString, env, name string) (*Project, error) {
+func NewProjectPromoter(serviceString, env, name string) (*ProjectPromoter, error) {
 	serviceList, err := getServices(serviceString, name, env)
 
 	if err != nil {
@@ -42,18 +42,21 @@ func NewProject(serviceString, env, name string) (*Project, error) {
 		services = append(services, *service)
 	}
 
-	project := Project{
+	changeLog := &[]types.ServiceChanges{}
+
+	project := ProjectPromoter{
 		env,
 		name,
 		&services,
-		&[]types.ServiceChanges{},
+		changeLog,
 		config,
+		NewBaseCommand(env, name),
 	}
 
 	return &project, nil
 }
 
-func (p *Project) Process(tag, region string, interactive, passphrase bool) error {
+func (p *ProjectPromoter) Process(tag, region string, interactive, passphrase bool) error {
 	ctx := context.Background()
 
 	for _, service := range *p.Services {
@@ -74,7 +77,19 @@ func (p *Project) Process(tag, region string, interactive, passphrase bool) erro
 		return fmt.Errorf(consts.NothingToPromote)
 	}
 
-	return p.executeGitFlow(passphrase)
+	return p.BaseCmd.Execute(passphrase, p.composeCommitTitle(), p.composeCommitBody())
+}
+
+func (p *ProjectPromoter) composeCommitTitle() string {
+	return fmt.Sprintf("promotion(%s): %s \n", p.env, p.name)
+}
+
+func (p *ProjectPromoter) composeCommitBody() string {
+	var msg string
+	for _, change := range *p.ChangeLog {
+		msg += fmt.Sprintf("changed %s to %s \n", change.Name, change.NewTag)
+	}
+	return msg
 }
 
 func getServices(serviceStr, project, env string) ([]string, error) {
@@ -91,48 +106,4 @@ func getServices(serviceStr, project, env string) ([]string, error) {
 	}
 
 	return serviceList, nil
-}
-
-func (p *Project) executeGitFlow(passphrase bool) error {
-	commitTitle := p.composeCommitTitle()
-	commitBody := p.composeCommitBody()
-
-	var workflow types.IGitFlow
-
-	base_workflow := &git.BaseGitFlow{
-		CommitMsg:  commitTitle + commitBody,
-		Passphrase: passphrase,
-	}
-
-	if utils.ShouldCreatePR(p.env) {
-		provider := gitprovider.GitProvider{}
-		github := provider.GetProvider("github")
-		workflow = &git.PRGitWorkflow{
-			BaseGitFlow:  *base_workflow,
-			GitProvider:  github,
-			Title:        commitTitle,
-			Body:         commitBody,
-			ChangeBranch: utils.ComposeChangeBranch(p.name, p.env),
-		}
-	} else {
-		workflow = base_workflow
-	}
-
-	if err := workflow.Execute(); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (p *Project) composeCommitTitle() string {
-	return fmt.Sprintf("promotion(%s): %s \n", p.env, p.name)
-}
-
-func (p *Project) composeCommitBody() string {
-	var msg string
-	for _, change := range *p.ChangeLog {
-		msg += fmt.Sprintf("changed %s to %s \n", change.Name, change.NewTag)
-	}
-	return msg
 }
