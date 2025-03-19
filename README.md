@@ -82,7 +82,7 @@ default:
   region: Y
 ```
 
-\*\* In order for the PR's to work, you should have an env variable named `GIT_PROVIDER_TOKEN` that stores your PAT \*\*
+\*\* In order for the PR's to work, you should have an env variable named `GIT_PROVIDER_TOKEN` that stores your PAT, It Should Have Read and Write access to code and pull requests \*\*
 
 You can also add another profile and use --profile with it's name
 
