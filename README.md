@@ -33,19 +33,19 @@ PREFIX=$HOME/.local make install
 To promote all services of a project to an environment with the latest image tag, use:
 
 ```bash
-promoter  --env <env>
+promoter  --project <project> --env <env>
 ```
 
 To promote certain services of a project to an environment with the latest image tag, use:
 
 ```bash
-promoter --services <services list, seperated by commas> --env <env>
+promoter --services <services list, seperated by commas> --project <project> --env <env>
 ```
 
 To promote a service to an environment with a specific image tag, use:
 
 ```bash
-promoter --services <service_name> -tag <tag> --env <env>
+promoter --services <service_name> -tag <tag> --env <env> --project <project>
 ```
 
 You can also use the -i (or --interactive) in order to promote interactively
