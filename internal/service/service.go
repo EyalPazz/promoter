@@ -16,7 +16,7 @@ type Service struct {
 	project       string
 	name          string
 	env           string
-	config        map[string]interface{}
+	config        map[string]any
 	projectConfig *utils.Config
 }
 

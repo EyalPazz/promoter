@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-type Config map[interface{}]interface{}
+type Config map[any]any
 
 func GetServiceImage(service, project, env string) (string, error) {
 	services, err := GetServices(project, env)
@@ -16,7 +16,7 @@ func GetServiceImage(service, project, env string) (string, error) {
 	}
 
 	for _, serviceConf := range services {
-		serviceMap, ok1 := serviceConf.(map[string]interface{})
+		serviceMap, ok1 := serviceConf.(map[string]any)
 		name, ok2 := serviceMap["name"].(string)
 		serviceType, ok3 := serviceMap["type"].(string)
 		if (!ok1 || !ok2 || !ok3) || name+"-"+serviceType != service {
@@ -34,7 +34,7 @@ func GetServiceImage(service, project, env string) (string, error) {
 
 }
 
-func GetServices(project, env string) ([]interface{}, error) {
+func GetServices(project, env string) ([]any, error) {
 
 	config, err := GetProjectConfig(project, env)
 	if err != nil {
@@ -45,7 +45,7 @@ func GetServices(project, env string) ([]interface{}, error) {
 		return nil, errors.New("application field not found in values file")
 	}
 
-	services, ok := (*config)["applications"].([]interface{})
+	services, ok := (*config)["applications"].([]any)
 	if !ok {
 		return nil, errors.New("applications field is not a list")
 	}
@@ -69,22 +69,22 @@ func GetServicesNames(project, env string) ([]string, error) {
 	return serviceNames, nil
 }
 
-func GetServicesFields(project, env string, fields ...string) ([]map[string]interface{}, error) {
+func GetServicesFields(project, env string, fields ...string) ([]map[string]any, error) {
 
 	services, err := GetServices(project, env)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []map[string]interface{}
+	var result []map[string]any
 
 	for _, app := range services {
-		appMap, ok := app.(map[string]interface{})
+		appMap, ok := app.(map[string]any)
 		if !ok {
 			continue
 		}
 
-		extractedFields := make(map[string]interface{})
+		extractedFields := make(map[string]any)
 
 		for index, field := range fields {
 			if val, exists := appMap[field]; exists {
@@ -101,18 +101,18 @@ func GetServicesFields(project, env string, fields ...string) ([]map[string]inte
 	return result, nil
 }
 
-func FindService(config *Config, service string) (map[string]interface{}, error) {
+func FindService(config *Config, service string) (map[string]any, error) {
 	if _, ok := (*config)["applications"]; !ok {
 		return nil, errors.New("application field not found in values file")
 	}
 
-	services, ok := (*config)["applications"].([]interface{})
+	services, ok := (*config)["applications"].([]any)
 	if !ok {
 		return nil, errors.New("applications field is not a list")
 	}
 
 	for _, app := range services {
-		appMap, ok := app.(map[string]interface{})
+		appMap, ok := app.(map[string]any)
 		if !ok {
 			continue
 		}
