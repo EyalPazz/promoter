@@ -22,7 +22,7 @@ func (gf *PRGitWorkflow) Execute() error {
 	if err != nil {
 		return err
 	}
-    defer gf.CheckoutBase(worktree)
+	defer gf.CheckoutBase(worktree)
 
 	if err := gf.BaseGitFlow.Execute(); err != nil {
 		return err
@@ -39,13 +39,13 @@ func (gf *PRGitWorkflow) CheckoutBase(worktree *git.Worktree) {
 	config, err := utils.GetConfig()
 
 	if err != nil {
-        fmt.Println(err)
+		fmt.Println(err)
 	}
 
 	if err := worktree.Checkout(&git.CheckoutOptions{
 		Branch: plumbing.ReferenceName("refs/heads/" + config.PullRequests.BaseBranch),
 	}); err != nil {
-        fmt.Println(err)
+		fmt.Println(err)
 	}
 
 }
