@@ -1,0 +1,23 @@
+name: Security
+
+on:
+    pull_request:
+        types:
+            - "opened"
+            - "synchronize"
+
+jobs:
+    TruffleHog:
+        name: "Secrets Scan (TruffleHog) 🔑"
+        runs-on: "runs-on=${{ github.run_id }}/runner=1cpu-linux-x64"
+        defaults:
+            run:
+                shell: bash
+        steps:
+            - name: "Checkout 📨"
+              uses: "actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd" # v5
+              with:
+                  fetch-depth: 0
+
+            - name: TruffleHog OSS
+              uses: trufflesecurity/trufflehog@0f58ae7c5036094a1e3e750d18772af92821b503 # v3.90.5

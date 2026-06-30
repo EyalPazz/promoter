@@ -1,0 +1,17 @@
+name: "PR Title"
+
+on:
+    pull_request:
+        types:
+            - opened
+            - edited
+            - synchronize
+            - reopened
+
+jobs:
+    pr-title-validation:
+        name: "PR Title"
+        runs-on: "runs-on=${{ github.run_id }}/runner=2cpu-linux-x64"
+        steps:
+            - name: "Make sure pr title matches regex 🧐"
+              uses: hilma-tech/actions/pr-title-validation@pr-title-validation-v1.1.0
